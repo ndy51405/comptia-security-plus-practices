@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CompTIA Security+ — Firewall ACL Ordering PBQ</title>
+<style>
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;
+  --text:#e6edf3;--muted:#8b949e;--blue:#1f6feb;--blue-lt:#388bfd;
+  --purple:#8957e5;--green:#2ea043;--green-bg:#0d2318;--green-border:#196c2e;
+  --red:#da3633;--red-bg:#1e0d0d;--red-border:#6e1a1a;
+  --yellow:#d29922;--yellow-bg:#1a1400;--yellow-border:#3d2e00;
+  --accent:#238636;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding:20px 12px 72px;}
+
+/* top bar */
+.top-bar{max-width:900px;margin:0 auto 18px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.badge{background:var(--purple);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;padding:3px 10px;border-radius:20px;text-transform:uppercase;}
+.top-title{font-size:13px;color:var(--muted);}
+.back-link{margin-left:auto;font-size:12px;color:var(--blue-lt);text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;}
+.back-link:hover{border-color:var(--blue-lt);}
+
+/* scenario */
+.card{max-width:900px;margin:0 auto 16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px 26px;}
+.q-label{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--blue-lt);text-transform:uppercase;margin-bottom:8px;}
+.q-text{font-size:15px;line-height:1.7;margin-bottom:14px;}
+.policy-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 18px;}
+.policy-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.policy-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.policy-list li{font-size:13px;line-height:1.5;display:flex;gap:10px;align-items:baseline;}
+.policy-list li::before{content:'▸';color:var(--blue-lt);flex-shrink:0;font-size:10px;}
+.hr{border:none;border-top:1px solid var(--border);margin:16px 0;}
+.q-sub{font-size:13px;color:var(--muted);line-height:1.6;}
+.q-sub strong{color:var(--text);}
+
+/* column headers */
+.col-header{max-width:900px;margin:0 auto 6px;display:grid;grid-template-columns:32px 1fr;gap:10px;padding:0 4px;}
+.col-h{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+
+/* rule list */
+.rule-list{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:0;position:relative;}
+
+/* drop indicator line */
+.drop-indicator{
+  height:3px;background:var(--blue-lt);border-radius:2px;
+  margin:0 4px;display:none;pointer-events:none;
+  box-shadow:0 0 8px rgba(56,139,253,.6);
+}
+.drop-indicator.show{display:block;}
+
+/* rule card */
+.rule-card{
+  display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:center;
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:0;margin:3px 0;cursor:grab;user-select:none;
+  transition:border-color .12s,background .12s,opacity .12s,transform .08s;
+  position:relative;
+}
+.rule-card:active{cursor:grabbing;}
+.rule-card.dragging{opacity:.35;transform:scale(.99);}
+.rule-card.drag-over-top{border-top:2px solid var(--blue-lt);}
+.rule-card.drag-over-bot{border-bottom:2px solid var(--blue-lt);}
+.rule-card:hover{border-color:var(--blue-lt);}
+
+/* row number */
+.row-num{
+  width:32px;height:100%;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:var(--muted);background:var(--surface2);
+  border-radius:7px 0 0 7px;border-right:1px solid var(--border);
+  padding:14px 0;
+}
+
+/* rule body */
+.rule-body{padding:10px 14px 10px 0;display:flex;flex-direction:column;gap:6px;}
+
+/* action badge */
+.action-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:700;letter-spacing:.06em;padding:2px 9px;border-radius:5px;
+}
+.action-badge.permit{background:var(--green-bg);color:#3fb950;border:1px solid var(--green-border);}
+.action-badge.deny  {background:var(--red-bg);  color:#f85149;border:1px solid var(--red-border);}
+
+/* rule detail row */
+.rule-detail{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;font-size:12px;font-family:monospace;}
+.field{display:flex;gap:4px;}
+.field-k{color:var(--muted);}
+.field-v{color:var(--text);font-weight:600;}
+
+/* rule description */
+.rule-desc{font-size:12px;color:var(--muted);line-height:1.4;}
+
+/* submitted state */
+.rule-card.correct{background:var(--green-bg);border-color:var(--green-border);}
+.rule-card.wrong  {background:var(--red-bg);  border-color:var(--red-border);}
+.rule-card.correct .row-num{background:#0a1f10;border-color:var(--green-border);}
+.rule-card.wrong   .row-num{background:#1a0a0a;border-color:var(--red-border);}
+
+.pos-badge{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;
+  display:none;
+}
+.rule-card.correct .pos-badge{display:inline-block;background:var(--green-bg);color:#3fb950;border:1px solid var(--green-border);}
+.rule-card.wrong   .pos-badge{display:inline-block;background:var(--red-bg);color:#f85149;border:1px solid var(--red-border);}
+
+/* drag hint */
+.drag-hint{max-width:900px;margin:0 auto 10px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+
+/* actions */
+.actions{max-width:900px;margin:20px auto 0;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+button{padding:10px 22px;border-radius:8px;border:none;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s,transform .08s;}
+button:active{transform:scale(.97);}
+.btn-submit{background:var(--accent);color:#fff;}
+.btn-submit:hover{background:#2ea043;}
+.btn-submit:disabled{background:var(--surface2);color:var(--muted);cursor:not-allowed;transform:none;}
+.btn-reset{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.btn-reset:hover{border-color:var(--muted);}
+.score-badge{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;padding:10px 16px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);}
+
+/* explanation */
+.exp-panel{max-width:900px;margin:24px auto 0;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:none;}
+.exp-panel.show{display:block;}
+.exp-hd{background:var(--surface2);border-bottom:1px solid var(--border);padding:13px 22px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+.exp-body{padding:20px 22px;display:flex;flex-direction:column;gap:10px;}
+
+.exp-row{display:grid;grid-template-columns:22px auto 1fr;gap:0 12px;align-items:start;padding:13px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);}
+.exp-row.ok {border-color:var(--green-border);}
+.exp-row.bad{border-color:var(--red-border);}
+.exp-icon{font-size:15px;padding-top:1px;}
+.exp-pos{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;padding-top:2px;}
+.exp-content{font-size:13px;line-height:1.6;}
+.exp-content strong{color:var(--text);}
+.exp-content .placed{color:var(--red);}
+.exp-content .correct-pos{color:#3fb950;}
+.exp-note{font-size:12px;color:var(--muted);margin-top:3px;}
+.exp-ft{padding:14px 22px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);line-height:1.7;}
+.exp-ft strong{color:var(--text);}
+
+/* touch move clone */
+#dragClone{position:fixed;pointer-events:none;z-index:9999;opacity:.85;transform:scale(1.03);}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <span class="badge">Performance-Based</span>
+  <span class="top-title">CompTIA Security+ SY0-701 · Domain 4: Network Security · Firewall ACL</span>
+  <a class="back-link" href="index.html">← All Questions</a>
+</div>
+
+<div class="card">
+  <div class="q-label">Question 3 of N — Configure Firewall Access Control List</div>
+  <p class="q-text">
+    A security engineer is configuring a <strong>stateless packet-filtering firewall</strong> that sits between the
+    Internet, a DMZ (containing a public web server), and the internal LAN.
+    Rules are evaluated <strong>top-down; first match wins</strong>. An implicit <em>deny all</em> exists at the bottom.
+  </p>
+  <div class="policy-box">
+    <div class="policy-title">Security Policy Requirements</div>
+    <ul class="policy-list">
+      <li>Host <strong>10.0.1.77</strong> has been flagged as compromised — block <em>all</em> its outbound traffic.</li>
+      <li>Block <strong>Telnet (TCP 23)</strong> from any source to any destination.</li>
+      <li>Allow inbound <strong>HTTPS (TCP 443)</strong> from the Internet to the DMZ web server <strong>203.0.113.10</strong>.</li>
+      <li>Allow the internal LAN <strong>10.0.1.0/24</strong> to query external <strong>DNS (UDP 53)</strong>.</li>
+      <li>Allow the internal LAN <strong>10.0.1.0/24</strong> to browse the web <strong>(TCP 80 and 443)</strong> outbound.</li>
+      <li>Block everything else — no implicit trust.</li>
+    </ul>
+  </div>
+  <hr class="hr"/>
+  <p class="q-sub">
+    <strong>Drag the ACL rules</strong> into the correct top-to-bottom order so the policy is enforced properly.
+    Ordering mistakes can create security gaps or block legitimate traffic.
+  </p>
+</div>
+
+<div class="drag-hint">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+  Drag cards up or down to reorder. Mobile: touch-drag supported.
+</div>
+
+<div class="rule-list" id="ruleList"></div>
+
+<div class="actions">
+  <button class="btn-submit" id="btnSubmit">Submit Answer</button>
+  <button class="btn-reset"  id="btnReset">Reset</button>
+  <span class="score-badge"  id="scoreBadge" style="display:none;"></span>
+</div>
+
+<div class="exp-panel" id="expPanel">
+  <div class="exp-hd">Answer Key &amp; Explanation</div>
+  <div class="exp-body" id="expBody"></div>
+  <div class="exp-ft" id="expFt">
+    <strong>Why rule order matters in stateless ACLs:</strong><br>
+    A stateless firewall has no session state — every packet is matched independently from the top.
+    The first rule that matches is applied; subsequent rules are ignored.
+    This means a broad <em>PERMIT</em> placed above a specific <em>DENY</em> will silently nullify that deny.
+    Classic mistakes: (1) putting the implicit deny-all in the middle, (2) letting a compromised host match
+    a subnet PERMIT before it hits its specific DENY, (3) blocking Telnet <em>after</em> a broad permit that
+    already covers TCP traffic.<br><br>
+    <strong>Correct order rationale:</strong><br>
+    Rule 1 — deny 10.0.1.77 first, <em>before</em> the LAN subnet permit, or the compromised host gets web access.<br>
+    Rule 2 — deny Telnet globally before any broad permits create accidental exceptions.<br>
+    Rules 3-5 — specific permits (inbound HTTPS, DNS, LAN web); ordering among them is flexible here.<br>
+    Rule 6 — implicit deny all must be <em>last</em>; placing it earlier would block legitimate traffic below it.
+  </div>
+</div>
+
+<script>
+const RULES = [
+  {
+    id: 'r1',
+    action: 'deny',
+    proto: 'IP', src: '10.0.1.77/32', dst: 'any', port: 'any',
+    label: 'DENY — Block compromised host',
+    desc: 'Blocks all traffic from the flagged internal host 10.0.1.77 regardless of destination or protocol.',
+    correctPos: 0,
+    wrongNote: 'This rule MUST appear before Rule 5 (PERMIT 10.0.1.0/24 outbound). If the subnet permit fires first, the compromised host 10.0.1.77 — which is inside 10.0.1.0/24 — would have its traffic allowed before it ever hits this deny.',
+  },
+  {
+    id: 'r2',
+    action: 'deny',
+    proto: 'TCP', src: 'any', dst: 'any', port: '23',
+    label: 'DENY — Block Telnet globally',
+    desc: 'Drops any TCP packet destined for port 23 (Telnet) regardless of source or destination IP.',
+    correctPos: 1,
+    wrongNote: 'Placing this after a broad permit could allow Telnet traffic to slip through if it matched an earlier rule first. Deny-specifics belong near the top.',
+  },
+  {
+    id: 'r3',
+    action: 'permit',
+    proto: 'TCP', src: 'any', dst: '203.0.113.10', port: '443',
+    label: 'PERMIT — Inbound HTTPS to DMZ web server',
+    desc: 'Allows external Internet clients to reach the public web server on TCP 443 (HTTPS).',
+    correctPos: 2,
+    wrongNote: 'This rule is position-flexible relative to Rules 4 and 5, but must come after the global denies (Rules 1 and 2) and before the implicit deny-all (Rule 6).',
+  },
+  {
+    id: 'r4',
+    action: 'permit',
+    proto: 'UDP', src: '10.0.1.0/24', dst: 'any', port: '53',
+    label: 'PERMIT — Internal LAN DNS queries outbound',
+    desc: 'Allows hosts on the 10.0.1.0/24 subnet to send DNS queries (UDP 53) to any external resolver.',
+    correctPos: 3,
+    wrongNote: 'This rule is position-flexible relative to Rules 3 and 5, but must come after the deny-all-from-10.0.1.77 rule; otherwise the compromised host could also use DNS.',
+  },
+  {
+    id: 'r5',
+    action: 'permit',
+    proto: 'TCP', src: '10.0.1.0/24', dst: 'any', port: '80, 443',
+    label: 'PERMIT — Internal LAN web browsing outbound',
+    desc: 'Allows hosts on 10.0.1.0/24 to initiate outbound HTTP and HTTPS connections.',
+    correctPos: 4,
+    wrongNote: 'If placed above Rule 1, the compromised host 10.0.1.77 (which is in the /24) would match this permit first and its web traffic would be allowed — a critical security gap.',
+  },
+  {
+    id: 'r6',
+    action: 'deny',
+    proto: 'IP', src: 'any', dst: 'any', port: 'any',
+    label: 'DENY — Implicit deny all (catch-all)',
+    desc: 'Drops any packet not matched by a previous rule. This must always be the last rule.',
+    correctPos: 5,
+    wrongNote: 'An implicit deny-all placed anywhere other than last will block all rules below it. This is one of the most common firewall misconfigurations on the exam.',
+  },
+];
+
+const CORRECT_ORDER = ['r1','r2','r3','r4','r5','r6'];
+
+// Shuffle helper
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+let order = shuffle([...CORRECT_ORDER]);
+// Guarantee it's not already correct
+while(order.join()===CORRECT_ORDER.join()) order=shuffle([...CORRECT_ORDER]);
+
+let submitted = false;
+let dragSrcId = null;
+
+/* ── render ── */
+function render(){
+  const list = document.getElementById('ruleList');
+  list.innerHTML='';
+  order.forEach((id,idx)=>{
+    const rule = RULES.find(r=>r.id===id);
+
+    const card = document.createElement('div');
+    card.className='rule-card';
+    card.dataset.id=id;
+    card.draggable=!submitted;
+
+    card.innerHTML=`
+      <div class="row-num">${idx+1}</div>
+      <div class="rule-body">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span class="action-badge ${rule.action}">${rule.action.toUpperCase()}</span>
+          <span style="font-size:13px;font-weight:600;">${rule.label}</span>
+        </div>
+        <div class="rule-detail">
+          <span class="field"><span class="field-k">proto:</span><span class="field-v">${rule.proto}</span></span>
+          <span class="field"><span class="field-k">src:</span><span class="field-v">${rule.src}</span></span>
+          <span class="field"><span class="field-k">dst:</span><span class="field-v">${rule.dst}</span></span>
+          <span class="field"><span class="field-k">dport:</span><span class="field-v">${rule.port}</span></span>
+        </div>
+        <div class="rule-desc">${rule.desc}</div>
+      </div>
+      <span class="pos-badge" id="pos-${id}"></span>`;
+
+    /* Desktop DnD */
+    card.addEventListener('dragstart', e=>{
+      if(submitted)return;
+      dragSrcId=id;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed='move';
+    });
+    card.addEventListener('dragend',()=>card.classList.remove('dragging'));
+
+    card.addEventListener('dragover', e=>{
+      e.preventDefault();
+      if(!dragSrcId||dragSrcId===id)return;
+      const rect=card.getBoundingClientRect();
+      const mid=rect.top+rect.height/2;
+      card.classList.remove('drag-over-top','drag-over-bot');
+      card.classList.add(e.clientY<mid?'drag-over-top':'drag-over-bot');
+    });
+    card.addEventListener('dragleave',()=>card.classList.remove('drag-over-top','drag-over-bot'));
+    card.addEventListener('drop', e=>{
+      e.preventDefault();
+      card.classList.remove('drag-over-top','drag-over-bot');
+      if(!dragSrcId||dragSrcId===id)return;
+      const rect=card.getBoundingClientRect();
+      const mid=rect.top+rect.height/2;
+      const insertBefore = e.clientY < mid;
+      const fromIdx=order.indexOf(dragSrcId);
+      const toIdx=order.indexOf(id);
+      order.splice(fromIdx,1);
+      const newTo=order.indexOf(id);
+      order.splice(insertBefore?newTo:newTo+1,0,dragSrcId);
+      dragSrcId=null;
+      render();
+    });
+
+    /* Touch DnD */
+    let touchClone=null, touchFromId=null;
+    card.addEventListener('touchstart', e=>{
+      if(submitted)return;
+      touchFromId=id;
+      const t=e.touches[0];
+      touchClone=card.cloneNode(true);
+      touchClone.id='dragClone';
+      touchClone.style.width=card.offsetWidth+'px';
+      touchClone.style.left=(t.clientX-card.offsetWidth/2)+'px';
+      touchClone.style.top=(t.clientY-40)+'px';
+      document.body.appendChild(touchClone);
+      card.classList.add('dragging');
+      e.preventDefault();
+    },{passive:false});
+
+    card.addEventListener('touchmove', e=>{
+      const clone=document.getElementById('dragClone');
+      if(!clone)return;
+      const t=e.touches[0];
+      clone.style.left=(t.clientX-card.offsetWidth/2)+'px';
+      clone.style.top=(t.clientY-40)+'px';
+      e.preventDefault();
+    },{passive:false});
+
+    card.addEventListener('touchend', e=>{
+      const clone=document.getElementById('dragClone');
+      if(clone) clone.remove();
+      card.classList.remove('dragging');
+      if(!touchFromId)return;
+      const t=e.changedTouches[0];
+      const el=document.elementFromPoint(t.clientX,t.clientY);
+      const target=el?.closest('.rule-card');
+      if(target&&target.dataset.id!==touchFromId){
+        const rect=target.getBoundingClientRect();
+        const insertBefore=t.clientY<rect.top+rect.height/2;
+        const fromIdx=order.indexOf(touchFromId);
+        order.splice(fromIdx,1);
+        const toIdx=order.indexOf(target.dataset.id);
+        order.splice(insertBefore?toIdx:toIdx+1,0,touchFromId);
+        render();
+      }
+      touchFromId=null;
+    });
+
+    list.appendChild(card);
+  });
+}
+
+/* ── submit ── */
+document.getElementById('btnSubmit').addEventListener('click',()=>{
+  if(submitted)return;
+  submitted=true;
+
+  let correct=0;
+  const results=[];
+
+  order.forEach((id,idx)=>{
+    const rule=RULES.find(r=>r.id===id);
+    const ok=id===CORRECT_ORDER[idx];
+    if(ok) correct++;
+    const card=document.querySelector(`.rule-card[data-id="${id}"]`);
+    card.classList.add(ok?'correct':'wrong');
+    card.draggable=false;
+    const pos=document.getElementById(`pos-${id}`);
+    pos.textContent=ok?'✓ Pos '+(idx+1):'✗ Pos '+(idx+1);
+    results.push({rule,idx,ok});
+  });
+
+  const pct=Math.round(correct/RULES.length*100);
+  const badge=document.getElementById('scoreBadge');
+  badge.style.display='inline-flex';
+  badge.innerHTML=`<span style="font-size:18px">${pct>=70?'✅':'❌'}</span>
+    <span>${correct}/${RULES.length} in correct position (${pct}%)</span>
+    <span style="color:var(--muted);font-weight:400;font-size:12px">${pct>=70?' — PASS':' — BELOW PASSING'}</span>`;
+
+  /* explanation rows */
+  const body=document.getElementById('expBody');
+  body.innerHTML='';
+  results.forEach(({rule,idx,ok})=>{
+    const correctIdx=CORRECT_ORDER.indexOf(rule.id);
+    const div=document.createElement('div');
+    div.className=`exp-row ${ok?'ok':'bad'}`;
+    div.innerHTML=`
+      <span class="exp-icon">${ok?'✅':'❌'}</span>
+      <span class="exp-pos">Pos ${idx+1}</span>
+      <div class="exp-content">
+        <strong>${rule.label}</strong><br>
+        ${ok
+          ? `Placed at position <span class="correct-pos">${idx+1}</span> — Correct!`
+          : `You placed it at <span class="placed">${idx+1}</span>; correct position is <span class="correct-pos">${correctIdx+1}</span>.`}
+        ${!ok?`<div class="exp-note">${rule.wrongNote}</div>`:''}
+      </div>`;
+    body.appendChild(div);
+  });
+
+  document.getElementById('expPanel').classList.add('show');
+  document.getElementById('btnSubmit').disabled=true;
+  document.getElementById('expPanel').scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+/* ── reset ── */
+document.getElementById('btnReset').addEventListener('click',()=>{
+  submitted=false;
+  order=shuffle([...CORRECT_ORDER]);
+  while(order.join()===CORRECT_ORDER.join()) order=shuffle([...CORRECT_ORDER]);
+  document.getElementById('scoreBadge').style.display='none';
+  document.getElementById('expPanel').classList.remove('show');
+  document.getElementById('btnSubmit').disabled=false;
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+render();
+</script>
+</body>
+</html>
