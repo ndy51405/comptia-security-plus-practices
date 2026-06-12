@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Q6 — Cryptographic Algorithm Selection Under Constraints</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #21262d;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --blue: #1f6feb;
+  --blue-lt: #388bfd;
+  --purple: #8957e5;
+  --green: #2ea043;
+  --green-bg: #0d2318;
+  --green-border: #196c2e;
+  --red: #da3633;
+  --red-bg: #1e0d0d;
+  --red-border: #6e1a1a;
+  --yellow: #d29922;
+  --accent: #238636;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  padding: 0 0 80px;
+}
+
+.top-bar {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 12px 24px; flex-wrap: wrap;
+}
+.badge {
+  background: var(--purple); color: #fff;
+  font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 20px; white-space: nowrap;
+}
+.top-title { flex: 1; font-size: 13px; color: var(--muted); min-width: 0; }
+.back-link { font-size: 13px; color: var(--blue-lt); text-decoration: none; white-space: nowrap; }
+.back-link:hover { text-decoration: underline; }
+
+.page { max-width: 860px; margin: 0 auto; padding: 32px 16px; }
+
+.scenario-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px; margin-bottom: 24px;
+}
+.sc-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; letter-spacing: .04em; }
+.tag-domain { background: #1a2d4a; color: var(--blue-lt); border: 1px solid #1f3d6b; }
+.tag-type   { background: #1e1a2e; color: #b695f8; border: 1px solid #3d2d6b; }
+.tag-diff.hard { background: #1e0d0d; color: #f85149; border: 1px solid #4a1000; }
+
+.scenario-box {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px; margin-bottom: 14px;
+  font-size: 14px; line-height: 1.7;
+}
+.scenario-box strong { color: var(--blue-lt); }
+.instructions { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ── Question rows ── */
+.q-rows { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
+
+.q-row {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 18px 20px;
+  display: flex; gap: 16px; align-items: flex-start;
+  flex-wrap: wrap;
+}
+.q-row-num {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: var(--muted);
+  flex-shrink: 0; margin-top: 2px;
+}
+.q-row-body { flex: 1; min-width: 200px; }
+.q-row-constraint {
+  font-size: 13px; line-height: 1.6; margin-bottom: 10px;
+}
+.q-row-constraint .req {
+  display: inline-block;
+  background: #1a2540; color: var(--blue-lt);
+  border: 1px solid #2a4070; border-radius: 4px;
+  padding: 1px 7px; font-size: 12px; font-weight: 600;
+  margin-left: 4px; white-space: nowrap;
+}
+.q-row select {
+  width: 100%;
+  background: var(--surface2); color: var(--text);
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 8px 12px; font-size: 13px;
+  appearance: none; cursor: pointer;
+  transition: border-color .15s;
+}
+.q-row select:focus { outline: none; border-color: var(--blue-lt); }
+.q-row select.correct { border-color: var(--green-border); background: var(--green-bg); }
+.q-row select.wrong   { border-color: var(--red-border);   background: var(--red-bg); }
+
+.q-row-result {
+  font-size: 12px; margin-top: 6px; display: none;
+}
+.q-row-result.correct { color: #3fb950; display: block; }
+.q-row-result.wrong   { color: #f85149; display: block; }
+
+/* Actions */
+.actions { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.btn-submit {
+  background: var(--accent); color: #fff;
+  border: none; border-radius: 8px;
+  padding: 10px 24px; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: opacity .15s;
+}
+.btn-submit:disabled { opacity: .4; cursor: not-allowed; }
+.btn-reset {
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 20px; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: border-color .15s, color .15s;
+}
+.btn-reset:hover { border-color: var(--muted); color: var(--text); }
+.score-badge {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 16px;
+  font-size: 14px; font-weight: 700;
+}
+
+/* Explanation */
+.explanation {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; display: none;
+}
+.exp-header {
+  padding: 14px 20px; background: var(--surface2); border-bottom: 1px solid var(--border);
+  font-size: 13px; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--muted);
+}
+.exp-row {
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.exp-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.exp-content { flex: 1; }
+.exp-label { font-weight: 700; font-size: 13px; color: var(--blue-lt); margin-bottom: 4px; }
+.exp-answer {
+  font-size: 12px; font-weight: 600; font-family: 'Courier New', monospace;
+  color: #3fb950; margin-bottom: 6px;
+}
+.exp-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.exp-tip {
+  margin: 0 20px 20px; padding: 14px 16px;
+  background: #1a1f2e; border: 1px solid #2a3a6e;
+  border-radius: 8px; font-size: 13px; color: #a0b4e8; line-height: 1.6;
+}
+.exp-tip strong { color: var(--blue-lt); }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <span class="badge">Performance-Based</span>
+  <span class="top-title">CompTIA Security+ SY0-701 · Domain 1: General Security Concepts · Cryptography</span>
+  <a class="back-link" href="index.html">← All Questions</a>
+</div>
+
+<div class="page">
+
+  <div class="scenario-card">
+    <div class="sc-title">Cryptographic Algorithm Selection Under Constraints</div>
+    <div class="tags">
+      <span class="tag tag-domain">Domain 1</span>
+      <span class="tag tag-type">Dropdown</span>
+      <span class="tag tag-diff hard">Hard</span>
+    </div>
+    <div class="scenario-box">
+      A security architect at <strong>Hartwell Defense Contractors</strong> — a government
+      supplier subject to FIPS 140-2 requirements — is designing cryptographic controls for
+      five independent components of a new classified-data platform. For each component, the
+      architect has recorded the binding requirements. The architect must select the single
+      most appropriate algorithm or mode from the available options, satisfying every stated
+      constraint without introducing unnecessary weakness or incompatibility.
+    </div>
+    <div class="instructions">
+      Read each component's requirements carefully, then use the dropdown to select the correct algorithm or mode. All five dropdowns must be set before you can submit.
+    </div>
+  </div>
+
+  <div class="q-rows" id="qRows"></div>
+
+  <div class="actions">
+    <button class="btn-submit" id="btnSubmit" disabled>Submit Answer</button>
+    <button class="btn-reset"  id="btnReset">Reset</button>
+    <span class="score-badge" id="scoreBadge" style="display:none;"></span>
+  </div>
+
+  <div class="explanation" id="explanation">
+    <div class="exp-header">Answer Explanations</div>
+    <div class="exp-tip" id="expTip"></div>
+  </div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    id: 'q1',
+    component: 'Web API Gateway — TLS Key Exchange',
+    constraint: 'The API gateway terminates TLS 1.2 connections from external clients. Compliance requires <span class="req">Perfect Forward Secrecy (PFS)</span>. The algorithm must also be <span class="req">FIPS 140-2 approved</span> and perform faster than classic finite-field Diffie-Hellman on the gateway\'s ARM-based processor.',
+    answer: 'ECDHE',
+    options: [
+      { value: '', label: '— Select key exchange —' },
+      { value: 'RSA',    label: 'RSA (static key transport)' },
+      { value: 'DHE',    label: 'DHE (finite-field Diffie-Hellman Ephemeral)' },
+      { value: 'ECDHE',  label: 'ECDHE (Elliptic Curve Diffie-Hellman Ephemeral)' },
+      { value: 'DH',     label: 'DH (static Diffie-Hellman)' },
+    ],
+    explanation: 'RSA key transport and static DH do not provide PFS because the same long-term private key is reused; compromise of the private key decrypts all past sessions. DHE provides PFS but is slow on ARM because it uses large (~2048-bit) modular exponentiation. ECDHE provides PFS using elliptic-curve math, achieving equivalent security to DHE-2048 with a 256-bit key — significantly faster — and is NIST/FIPS approved (SP 800-56A Rev.3).'
+  },
+  {
+    id: 'q2',
+    component: 'Laptop Hard-Drive Encryption',
+    constraint: 'Field laptops must encrypt the entire OS drive. The solution must be <span class="req">FIPS 140-2 approved</span>, support <span class="req">authenticated encryption</span> (confidentiality + integrity in one pass), and operate efficiently on CPUs with AES-NI hardware acceleration.',
+    answer: 'AES-256-XTS + HMAC-SHA-256',
+    options: [
+      { value: '', label: '— Select cipher/mode —' },
+      { value: '3DES-CBC',              label: '3DES-CBC (Triple DES, CBC mode)' },
+      { value: 'AES-128-ECB',           label: 'AES-128-ECB (Electronic Codebook)' },
+      { value: 'AES-256-XTS + HMAC-SHA-256', label: 'AES-256-XTS + HMAC-SHA-256' },
+      { value: 'RC4',                   label: 'RC4 (stream cipher)' },
+    ],
+    explanation: '3DES is FIPS approved but deprecated (NIST SP 800-131A Rev.2 disallows 3DES for new implementations after 2023). AES-128-ECB is FIPS approved but ECB mode leaks data patterns — identical plaintext blocks produce identical ciphertext — making it unsuitable for disk encryption. RC4 is not FIPS approved and is cryptographically broken. AES-256-XTS (FIPS approved, NIST SP 800-38E) is the standard mode for full-disk encryption; HMAC-SHA-256 adds the required integrity layer. Modern CPUs\' AES-NI instruction sets accelerate AES operations to near-memory-speed throughput.'
+  },
+  {
+    id: 'q3',
+    component: 'IoT Sensor — Asymmetric Authentication',
+    constraint: 'Constrained IoT sensors (128 KB RAM, 32-bit MCU at 80 MHz) must authenticate to the gateway using an asymmetric signature scheme. The scheme must meet <span class="req">128-bit security strength</span> (NIST SP 800-57), use the <span class="req">smallest possible key size</span>, and be <span class="req">FIPS 140-2 approved</span>.',
+    answer: 'ECDSA P-256',
+    options: [
+      { value: '', label: '— Select signature scheme —' },
+      { value: 'RSA-2048',    label: 'RSA-2048' },
+      { value: 'RSA-3072',    label: 'RSA-3072' },
+      { value: 'ECDSA P-256', label: 'ECDSA with NIST P-256 curve' },
+      { value: 'DSA-1024',    label: 'DSA-1024' },
+    ],
+    explanation: 'NIST SP 800-57 Part 1 Rev.5 maps security strength to key size: RSA-2048 ≈ 112-bit (below the 128-bit requirement); RSA-3072 ≈ 128-bit but carries a 3072-bit key and requires expensive big-number arithmetic on a constrained MCU. DSA-1024 provides only ~80-bit security and is no longer approved. ECDSA with P-256 achieves 128-bit security with only a 256-bit key, fitting in constrained RAM and running approximately 10× faster than RSA-3072 on a small MCU. P-256 (secp256r1) is explicitly FIPS 186-5 approved.'
+  },
+  {
+    id: 'q4',
+    component: 'Database — Authenticated Encryption for Records',
+    constraint: 'Sensitive records stored in a PostgreSQL database must be encrypted at the column level. The cipher must provide <span class="req">both confidentiality and integrity</span> in a single operation (AEAD), support <span class="req">associated data</span> (column metadata authenticated but not encrypted), and be <span class="req">FIPS 140-2 approved</span>.',
+    answer: 'AES-256-GCM',
+    options: [
+      { value: '', label: '— Select AEAD mode —' },
+      { value: 'AES-256-CBC',      label: 'AES-256-CBC (Cipher Block Chaining)' },
+      { value: 'AES-256-CTR',      label: 'AES-256-CTR (Counter mode)' },
+      { value: 'AES-256-GCM',      label: 'AES-256-GCM (Galois/Counter Mode)' },
+      { value: 'ChaCha20-Poly1305', label: 'ChaCha20-Poly1305' },
+    ],
+    explanation: 'AES-CBC and AES-CTR provide confidentiality only — they require a separate MAC (e.g., HMAC) for integrity, and CBC is also vulnerable to padding oracle attacks. ChaCha20-Poly1305 is an AEAD cipher and is used in TLS 1.3 but is not included in FIPS 140-2 approved algorithm lists. AES-256-GCM is an AEAD mode (NIST SP 800-38D) that provides confidentiality, integrity, and authentication in one pass, natively supports Additional Authenticated Data (AAD) for the metadata requirement, and is FIPS 140-2 approved. TLS 1.3 exclusively uses AEAD ciphers for the same reasons.'
+  },
+  {
+    id: 'q5',
+    component: 'Code-Signing Pipeline — Hash Algorithm',
+    constraint: 'The build pipeline signs every firmware image before deployment. Firmware verification on the device checks the signature. The hash function must provide <span class="req">≥ 256-bit output</span>, be <span class="req">collision-resistant against current attacks</span>, and be listed as <span class="req">approved in FIPS 180-4</span>. The signing key is an ECDSA P-384 key (192-bit security strength — the hash must match this strength tier).',
+    answer: 'SHA-384',
+    options: [
+      { value: '', label: '— Select hash function —' },
+      { value: 'MD5',     label: 'MD5 (128-bit output)' },
+      { value: 'SHA-1',   label: 'SHA-1 (160-bit output)' },
+      { value: 'SHA-256', label: 'SHA-256 (256-bit output)' },
+      { value: 'SHA-384', label: 'SHA-384 (384-bit output)' },
+    ],
+    explanation: 'MD5 and SHA-1 are cryptographically broken — practical collision attacks exist for both and they are no longer FIPS approved for digital signatures (NIST SP 800-131A Rev.2). SHA-256 is approved and collision-resistant but provides only 128-bit collision resistance, which is below the 192-bit security level of the P-384 signing key — mismatching hash and key strength wastes the key\'s security. SHA-384 provides 192-bit collision resistance, matching the P-384 key strength, is FIPS 180-4 approved, and has a 384-bit output satisfying the ≥256-bit requirement. NIST SP 800-57 recommends pairing algorithms at matching security strength levels.'
+  }
+];
+
+let submitted = false;
+
+function buildUI() {
+  const container = document.getElementById('qRows');
+  container.innerHTML = '';
+  QUESTIONS.forEach((q, i) => {
+    const row = document.createElement('div');
+    row.className = 'q-row';
+    row.id = 'row-' + q.id;
+    row.innerHTML = `
+      <div class="q-row-num">${i + 1}</div>
+      <div class="q-row-body">
+        <div class="q-row-constraint">
+          <strong style="color:var(--text)">${q.component}</strong><br>
+          ${q.constraint}
+        </div>
+        <select id="sel-${q.id}" data-answer="${q.answer}">
+          ${q.options.map(o => `<option value="${o.value}">${o.label}</option>`).join('')}
+        </select>
+        <div class="q-row-result" id="res-${q.id}"></div>
+      </div>`;
+    container.appendChild(row);
+
+    document.getElementById('sel-' + q.id).addEventListener('change', updateSubmit);
+  });
+}
+
+function updateSubmit() {
+  const allSet = QUESTIONS.every(q => {
+    const sel = document.getElementById('sel-' + q.id);
+    return sel && sel.value !== '';
+  });
+  document.getElementById('btnSubmit').disabled = !allSet || submitted;
+}
+
+document.getElementById('btnSubmit').addEventListener('click', () => {
+  if (submitted) return;
+  submitted = true;
+  document.getElementById('btnSubmit').disabled = true;
+
+  let correct = 0;
+  QUESTIONS.forEach(q => {
+    const sel = document.getElementById('sel-' + q.id);
+    const isCorrect = sel.value === q.answer;
+    if (isCorrect) correct++;
+    sel.disabled = true;
+    sel.classList.add(isCorrect ? 'correct' : 'wrong');
+    const res = document.getElementById('res-' + q.id);
+    res.className = 'q-row-result ' + (isCorrect ? 'correct' : 'wrong');
+    res.textContent = isCorrect
+      ? '✅ Correct'
+      : `❌ Incorrect — correct answer: ${q.answer}`;
+  });
+
+  const total = QUESTIONS.length;
+  const pct = Math.round(correct / total * 100);
+  const badge = document.getElementById('scoreBadge');
+  badge.style.display = 'flex';
+  badge.innerHTML = `<span style="font-size:18px">${pct >= 70 ? '✅' : '❌'}</span>
+    <span>${correct}/${total} correct (${pct}%)</span>
+    <span style="color:var(--muted);font-weight:400;font-size:12px">
+      ${pct >= 70 ? ' — PASS' : ' — BELOW PASSING'}
+    </span>`;
+
+  const expPanel = document.getElementById('explanation');
+  expPanel.style.display = 'block';
+  const tip = document.getElementById('expTip');
+
+  QUESTIONS.forEach((q, i) => {
+    const sel = document.getElementById('sel-' + q.id);
+    const isCorrect = sel.value === q.answer;
+    const row = document.createElement('div');
+    row.className = 'exp-row';
+    row.innerHTML = `
+      <span class="exp-icon">${isCorrect ? '✅' : '❌'}</span>
+      <div class="exp-content">
+        <div class="exp-label">${i + 1}. ${q.component}</div>
+        <div class="exp-answer">Correct: ${q.answer}</div>
+        <div class="exp-text">${q.explanation}</div>
+      </div>`;
+    expPanel.insertBefore(row, tip);
+  });
+
+  tip.innerHTML = `<strong>Exam Tip:</strong> Security+ SY0-701 expects you to know three
+    NIST publications by name: <em>SP 800-57</em> (key management &amp; security strength levels),
+    <em>SP 800-131A Rev.2</em> (algorithm transitions — what is deprecated vs. disallowed),
+    and <em>FIPS 180-4</em> (approved hash functions). A common trap is choosing SHA-256 for
+    a P-384 key — always match the hash output length to the asymmetric key's security level.
+    Another trap is confusing <em>AES-CTR</em> (no integrity) with <em>AES-GCM</em> (AEAD — integrity included).`;
+
+  expPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+document.getElementById('btnReset').addEventListener('click', () => {
+  submitted = false;
+  document.querySelectorAll('.exp-row').forEach(r => r.remove());
+  document.getElementById('expTip').innerHTML = '';
+  document.getElementById('explanation').style.display = 'none';
+  document.getElementById('scoreBadge').style.display = 'none';
+  buildUI();
+  updateSubmit();
+});
+
+buildUI();
+updateSubmit();
+</script>
+</body>
+</html>

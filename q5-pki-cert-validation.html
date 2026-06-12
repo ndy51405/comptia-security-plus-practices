@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Q5 — PKI Certificate Validation Order</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #21262d;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --blue: #1f6feb;
+  --blue-lt: #388bfd;
+  --purple: #8957e5;
+  --green: #2ea043;
+  --green-bg: #0d2318;
+  --green-border: #196c2e;
+  --red: #da3633;
+  --red-bg: #1e0d0d;
+  --red-border: #6e1a1a;
+  --yellow: #d29922;
+  --accent: #238636;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  padding: 0 0 80px;
+}
+
+.top-bar {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 12px 24px; flex-wrap: wrap;
+}
+.badge {
+  background: var(--purple); color: #fff;
+  font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 20px; white-space: nowrap;
+}
+.top-title { flex: 1; font-size: 13px; color: var(--muted); min-width: 0; }
+.back-link { font-size: 13px; color: var(--blue-lt); text-decoration: none; white-space: nowrap; }
+.back-link:hover { text-decoration: underline; }
+
+.page { max-width: 760px; margin: 0 auto; padding: 32px 16px; }
+
+.scenario-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px; margin-bottom: 24px;
+}
+.sc-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; letter-spacing: .04em; }
+.tag-domain { background: #1a2d4a; color: var(--blue-lt); border: 1px solid #1f3d6b; }
+.tag-type   { background: #1e1a2e; color: #b695f8; border: 1px solid #3d2d6b; }
+.tag-diff.med { background: #1e1a0e; color: var(--yellow); border: 1px solid #4a3800; }
+
+.scenario-box {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px; margin-bottom: 14px;
+  font-size: 14px; line-height: 1.7;
+}
+.scenario-box strong { color: var(--blue-lt); }
+.instructions { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ── Reorder list ── */
+.reorder-list {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-bottom: 24px;
+}
+.r-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+  cursor: grab; user-select: none;
+  transition: border-color .15s, background .15s, transform .1s;
+  position: relative;
+}
+.r-card:hover { border-color: var(--blue-lt); background: var(--surface2); }
+.r-card.dragging { opacity: .3; }
+.r-card.drag-over-top { border-top: 2px solid var(--blue-lt); }
+.r-card.drag-over-bot { border-bottom: 2px solid var(--blue-lt); }
+.r-handle { color: var(--muted); font-size: 16px; flex-shrink: 0; cursor: grab; }
+.r-pos {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: var(--muted);
+  flex-shrink: 0;
+}
+.r-text { flex: 1; font-size: 14px; line-height: 1.5; }
+.r-badge {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  font-size: 18px; display: none;
+}
+.r-card.correct { border-color: var(--green-border); background: var(--green-bg); }
+.r-card.wrong   { border-color: var(--red-border);   background: var(--red-bg); }
+.r-card.correct .r-pos { background: var(--green-bg); border-color: var(--green-border); color: #3fb950; }
+.r-card.wrong   .r-pos { background: var(--red-bg);   border-color: var(--red-border);   color: #f85149; }
+
+/* Actions */
+.actions { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.btn-submit {
+  background: var(--accent); color: #fff;
+  border: none; border-radius: 8px;
+  padding: 10px 24px; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: opacity .15s;
+}
+.btn-submit:disabled { opacity: .4; cursor: not-allowed; }
+.btn-reset {
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 20px; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: border-color .15s, color .15s;
+}
+.btn-reset:hover { border-color: var(--muted); color: var(--text); }
+.score-badge {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 16px;
+  font-size: 14px; font-weight: 700;
+}
+
+/* Explanation */
+.explanation {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; display: none;
+}
+.exp-header {
+  padding: 14px 20px; background: var(--surface2); border-bottom: 1px solid var(--border);
+  font-size: 13px; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--muted);
+}
+.exp-row {
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.exp-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.exp-content { flex: 1; }
+.exp-step { font-weight: 700; font-size: 13px; color: var(--blue-lt); margin-bottom: 4px; }
+.exp-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.exp-tip {
+  margin: 0 20px 20px; padding: 14px 16px;
+  background: #1a1f2e; border: 1px solid #2a3a6e;
+  border-radius: 8px; font-size: 13px; color: #a0b4e8; line-height: 1.6;
+}
+.exp-tip strong { color: var(--blue-lt); }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <span class="badge">Performance-Based</span>
+  <span class="top-title">CompTIA Security+ SY0-701 · Domain 1: General Security Concepts · PKI</span>
+  <a class="back-link" href="index.html">← All Questions</a>
+</div>
+
+<div class="page">
+
+  <div class="scenario-card">
+    <div class="sc-title">PKI Certificate Validation — Step Ordering</div>
+    <div class="tags">
+      <span class="tag tag-domain">Domain 1</span>
+      <span class="tag tag-type">Drag &amp; Reorder</span>
+      <span class="tag tag-diff med">Medium</span>
+    </div>
+    <div class="scenario-box">
+      A developer at <strong>Crestline Bank</strong> is implementing a custom TLS client library
+      for an internal payment service. The security team's code-review checklist requires the
+      library to perform a complete X.509 certificate validation sequence before trusting any
+      server connection. The lead architect asks the developer to document the correct order of
+      validation steps, from the moment the server's certificate is received to the final
+      decision to accept the connection.<br><br>
+      <strong>Six validation steps must be placed in the correct sequence (1 = first, 6 = last):</strong>
+    </div>
+    <div class="instructions">
+      Drag the cards to arrange the six PKI validation steps in the correct order.
+      The order matters — some checks depend on earlier checks completing successfully.
+    </div>
+  </div>
+
+  <div class="reorder-list" id="reorderList"></div>
+
+  <div class="actions">
+    <button class="btn-submit" id="btnSubmit">Submit Answer</button>
+    <button class="btn-reset"  id="btnReset">Reset</button>
+    <span class="score-badge" id="scoreBadge" style="display:none;"></span>
+  </div>
+
+  <div class="explanation" id="explanation">
+    <div class="exp-header">Answer Explanations</div>
+    <div class="exp-tip" id="expTip"></div>
+  </div>
+
+</div>
+
+<script>
+// Correct order index 0 = step 1 (first), index 5 = step 6 (last)
+const STEPS = [
+  {
+    id: 's1',
+    text: 'Receive the server\'s certificate (and any intermediate CA certificates) sent during the TLS handshake.',
+    explanation: 'The client must first obtain the certificate chain before it can perform any checks. This is the starting point — without receiving the certificate, no validation is possible.'
+  },
+  {
+    id: 's2',
+    text: 'Check the certificate\'s validity period — confirm the current date/time falls between the "Not Before" and "Not After" fields.',
+    explanation: 'Validity-period checking is cheap and fast. An expired or not-yet-valid certificate should be rejected immediately before performing the more expensive cryptographic operations.'
+  },
+  {
+    id: 's3',
+    text: 'Build and verify the certification path — walk the chain of intermediate certificates up to a trusted root CA in the local trust store.',
+    explanation: 'Chain building ensures the certificate was issued by a CA the client trusts. Without a complete, verifiable chain to a trusted root, the certificate\'s signature in the next step cannot be authenticated.'
+  },
+  {
+    id: 's4',
+    text: 'Verify the CA\'s digital signature on the certificate using the issuing CA\'s public key.',
+    explanation: 'Once the trusted chain is established, the client uses the issuing CA\'s public key to verify the signature on the end-entity certificate. This proves the certificate was not forged or tampered with.'
+  },
+  {
+    id: 's5',
+    text: 'Check the certificate\'s revocation status by querying an OCSP responder or downloading and parsing the issuing CA\'s CRL.',
+    explanation: 'Revocation status is checked after signature verification because the OCSP/CRL response itself must be trusted (signed by the CA), and that chain of trust was just established. Checking revocation before confirming the CA is trusted would be circular.'
+  },
+  {
+    id: 's6',
+    text: 'Confirm the server\'s hostname matches the certificate\'s Subject Alternative Name (SAN) or Common Name (CN) field.',
+    explanation: 'Hostname verification is the final step. It ties the mathematically verified certificate to the specific server the client intended to connect to, preventing a valid certificate from a different domain being used in a MITM attack. RFC 6125 mandates checking SANs over CN.'
+  }
+];
+
+const CORRECT_ORDER = STEPS.map(s => s.id);
+
+let order = [];
+let dragSrcIdx = null;
+let submitted = false;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function init() {
+  submitted = false;
+  // Guarantee shuffled
+  do { order = shuffle(CORRECT_ORDER); }
+  while (order.join() === CORRECT_ORDER.join());
+
+  document.getElementById('scoreBadge').style.display = 'none';
+  document.getElementById('explanation').style.display = 'none';
+  document.querySelectorAll('.exp-row').forEach(r => r.remove());
+  document.getElementById('expTip').innerHTML = '';
+  document.getElementById('btnSubmit').disabled = false;
+
+  render();
+}
+
+function render() {
+  const list = document.getElementById('reorderList');
+  list.innerHTML = '';
+  order.forEach((id, idx) => {
+    const step = STEPS.find(s => s.id === id);
+    const card = document.createElement('div');
+    card.className = 'r-card';
+    card.draggable = !submitted;
+    card.dataset.idx = idx;
+    card.innerHTML = `
+      <span class="r-handle">⠿</span>
+      <div class="r-pos">${idx + 1}</div>
+      <div class="r-text">${step.text}</div>
+      <span class="r-badge" id="badge-${idx}"></span>`;
+
+    if (!submitted) {
+      card.addEventListener('dragstart', e => {
+        dragSrcIdx = idx;
+        setTimeout(() => card.classList.add('dragging'), 0);
+      });
+      card.addEventListener('dragend', () => {
+        card.classList.remove('dragging');
+        dragSrcIdx = null;
+        document.querySelectorAll('.r-card').forEach(c => {
+          c.classList.remove('drag-over-top', 'drag-over-bot');
+        });
+      });
+      card.addEventListener('dragover', e => {
+        e.preventDefault();
+        card.classList.remove('drag-over-top', 'drag-over-bot');
+        const rect = card.getBoundingClientRect();
+        const midY = rect.top + rect.height / 2;
+        card.classList.add(e.clientY < midY ? 'drag-over-top' : 'drag-over-bot');
+      });
+      card.addEventListener('dragleave', () => {
+        card.classList.remove('drag-over-top', 'drag-over-bot');
+      });
+      card.addEventListener('drop', e => {
+        e.preventDefault();
+        card.classList.remove('drag-over-top', 'drag-over-bot');
+        if (dragSrcIdx === null || dragSrcIdx === idx) return;
+        const rect = card.getBoundingClientRect();
+        const midY = rect.top + rect.height / 2;
+        const insertBefore = e.clientY < midY;
+        const [moved] = order.splice(dragSrcIdx, 1);
+        let target = order.indexOf(id);
+        if (!insertBefore) target += 1;
+        order.splice(target, 0, moved);
+        dragSrcIdx = null;
+        render();
+      });
+    }
+
+    // Touch
+    card.addEventListener('touchstart', onTouchStart, { passive: false });
+    list.appendChild(card);
+  });
+}
+
+// ── Submit ───────────────────────────────────────────────────────────────────
+document.getElementById('btnSubmit').addEventListener('click', () => {
+  if (submitted) return;
+  submitted = true;
+  document.getElementById('btnSubmit').disabled = true;
+
+  let correct = 0;
+  order.forEach((id, idx) => {
+    const isCorrect = id === CORRECT_ORDER[idx];
+    if (isCorrect) correct++;
+    const card = document.querySelector(`.r-card[data-idx="${idx}"]`);
+    card.classList.add(isCorrect ? 'correct' : 'wrong');
+    card.draggable = false;
+    const badge = card.querySelector('.r-badge');
+    badge.textContent = isCorrect ? '✅' : '❌';
+    badge.style.display = 'block';
+  });
+
+  const total = STEPS.length;
+  const pct = Math.round(correct / total * 100);
+  const scoreBadge = document.getElementById('scoreBadge');
+  scoreBadge.style.display = 'flex';
+  scoreBadge.innerHTML = `<span style="font-size:18px">${pct >= 70 ? '✅' : '❌'}</span>
+    <span>${correct}/${total} correct (${pct}%)</span>
+    <span style="color:var(--muted);font-weight:400;font-size:12px">
+      ${pct >= 70 ? ' — PASS' : ' — BELOW PASSING'}
+    </span>`;
+
+  const expPanel = document.getElementById('explanation');
+  expPanel.style.display = 'block';
+  const tip = document.getElementById('expTip');
+
+  STEPS.forEach((step, correctIdx) => {
+    const userIdx = order.indexOf(step.id);
+    const isCorrect = userIdx === correctIdx;
+    const row = document.createElement('div');
+    row.className = 'exp-row';
+    row.innerHTML = `
+      <span class="exp-icon">${isCorrect ? '✅' : '❌'}</span>
+      <div class="exp-content">
+        <div class="exp-step">Step ${correctIdx + 1}${!isCorrect ? ` <span style="color:var(--muted);font-weight:400;font-size:12px;">(you placed it at position ${userIdx + 1})</span>` : ''}</div>
+        <div class="exp-text"><strong style="color:var(--text)">${step.text}</strong><br><br>${step.explanation}</div>
+      </div>`;
+    expPanel.insertBefore(row, tip);
+  });
+
+  tip.innerHTML = `<strong>Exam Tip:</strong> Security+ commonly tests the distinction between
+    <em>CRL</em> and <em>OCSP</em> for revocation checking. Remember that OCSP stapling
+    (RFC 6066) lets the server pre-fetch and embed the OCSP response in the TLS handshake,
+    reducing latency and protecting user privacy. Also note: RFC 6125 specifies that
+    <em>Subject Alternative Name</em> (SAN) must take precedence over <em>Common Name</em>
+    (CN) for hostname matching — many exam questions hinge on this distinction.`;
+
+  expPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+// ── Reset ────────────────────────────────────────────────────────────────────
+document.getElementById('btnReset').addEventListener('click', init);
+
+// ── Touch drag ────────────────────────────────────────────────────────────────
+let touchClone = null;
+let touchSrcIdx = null;
+let touchOffX = 0, touchOffY = 0;
+
+function onTouchStart(e) {
+  if (submitted) return;
+  e.preventDefault();
+  const card = e.currentTarget;
+  touchSrcIdx = parseInt(card.dataset.idx);
+  const touch = e.touches[0];
+  const rect = card.getBoundingClientRect();
+  touchOffX = touch.clientX - rect.left;
+  touchOffY = touch.clientY - rect.top;
+
+  touchClone = card.cloneNode(true);
+  touchClone.style.cssText = `position:fixed;top:${rect.top}px;left:${rect.left}px;
+    width:${rect.width}px;pointer-events:none;z-index:9999;opacity:.85;border-radius:10px;`;
+  document.body.appendChild(touchClone);
+
+  document.addEventListener('touchmove', onTouchMove, { passive: false });
+  document.addEventListener('touchend', onTouchEnd);
+}
+
+function onTouchMove(e) {
+  e.preventDefault();
+  const touch = e.touches[0];
+  touchClone.style.top  = (touch.clientY - touchOffY) + 'px';
+  touchClone.style.left = (touch.clientX - touchOffX) + 'px';
+
+  document.querySelectorAll('.r-card').forEach(c => c.classList.remove('drag-over-top', 'drag-over-bot'));
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  const target = el && el.closest('.r-card');
+  if (target && target !== touchClone) {
+    const rect = target.getBoundingClientRect();
+    target.classList.add(touch.clientY < rect.top + rect.height / 2 ? 'drag-over-top' : 'drag-over-bot');
+  }
+}
+
+function onTouchEnd(e) {
+  document.removeEventListener('touchmove', onTouchMove);
+  document.removeEventListener('touchend', onTouchEnd);
+  if (touchClone) { touchClone.remove(); touchClone = null; }
+  document.querySelectorAll('.r-card').forEach(c => c.classList.remove('drag-over-top', 'drag-over-bot'));
+
+  const touch = e.changedTouches[0];
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  const targetCard = el && el.closest('.r-card');
+
+  if (targetCard && touchSrcIdx !== null) {
+    const targetIdx = parseInt(targetCard.dataset.idx);
+    if (targetIdx !== touchSrcIdx) {
+      const rect = targetCard.getBoundingClientRect();
+      const insertBefore = touch.clientY < rect.top + rect.height / 2;
+      const [moved] = order.splice(touchSrcIdx, 1);
+      let t = insertBefore ? targetIdx : targetIdx + 1;
+      if (touchSrcIdx < targetIdx && !insertBefore) t -= 1;
+      else if (touchSrcIdx > targetIdx && insertBefore) {}
+      // recalculate after splice
+      order.splice(insertBefore
+        ? (touchSrcIdx < targetIdx ? targetIdx - 1 : targetIdx)
+        : (touchSrcIdx < targetIdx ? targetIdx - 1 : targetIdx + 1 > order.length ? order.length : targetIdx + 1),
+        0, moved);
+    }
+  }
+
+  touchSrcIdx = null;
+  render();
+}
+
+init();
+</script>
+</body>
+</html>
