@@ -1,742 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CompTIA Security+ — Performance-Based Question</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CompTIA Security+ SY0-701 — Practice PBQs</title>
 <style>
-  :root {
-    --bg: #0d1117;
-    --surface: #161b22;
-    --surface2: #21262d;
-    --border: #30363d;
-    --accent: #238636;
-    --accent-hover: #2ea043;
-    --danger: #da3633;
-    --warning: #d29922;
-    --text: #e6edf3;
-    --text-muted: #8b949e;
-    --blue: #1f6feb;
-    --blue-light: #388bfd;
-    --purple: #8957e5;
-    --correct: #196c2e;
-    --correct-border: #2ea043;
-    --wrong: #6e1a1a;
-    --wrong-border: #da3633;
-    --drag-over: #1c3a5e;
-    --drag-over-border: #388bfd;
-  }
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;
+  --text:#e6edf3;--muted:#8b949e;--blue:#1f6feb;--blue-lt:#388bfd;
+  --purple:#8957e5;--green:#2ea043;--yellow:#d29922;--red:#da3633;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding:40px 16px 80px;}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+.hero{max-width:780px;margin:0 auto 48px;text-align:center;}
+.hero-badge{display:inline-block;background:var(--purple);color:#fff;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:18px;}
+.hero h1{font-size:28px;font-weight:700;line-height:1.3;margin-bottom:10px;}
+.hero h1 span{color:var(--blue-lt);}
+.hero p{font-size:14px;color:var(--muted);line-height:1.7;max-width:560px;margin:0 auto;}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    min-height: 100vh;
-    padding: 24px 16px 48px;
-  }
+.domain-section{max-width:780px;margin:0 auto 36px;}
+.domain-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-left:2px;display:flex;align-items:center;gap:8px;}
+.domain-label::after{content:'';flex:1;height:1px;background:var(--border);}
 
-  /* ── Header ── */
-  .exam-header {
-    max-width: 900px;
-    margin: 0 auto 28px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .exam-badge {
-    background: var(--purple);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: .08em;
-    padding: 3px 10px;
-    border-radius: 20px;
-    white-space: nowrap;
-    text-transform: uppercase;
-  }
-  .exam-title {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-weight: 500;
-  }
+.cards{display:flex;flex-direction:column;gap:12px;}
 
-  /* ── Card ── */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    max-width: 900px;
-    margin: 0 auto 20px;
-    padding: 28px;
-  }
+.q-card{
+  display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:16px;
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:18px 20px;text-decoration:none;color:inherit;
+  transition:border-color .15s,background .15s,transform .1s;
+}
+.q-card:hover{border-color:var(--blue-lt);background:var(--surface2);transform:translateY(-1px);}
 
-  .question-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: .1em;
-    color: var(--blue-light);
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
+.q-num{
+  width:52px;height:52px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--blue-lt);flex-shrink:0;
+}
+.q-info{}
+.q-title{font-size:15px;font-weight:600;margin-bottom:4px;}
+.q-desc{font-size:13px;color:var(--muted);line-height:1.5;}
+.q-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;letter-spacing:.04em;}
+.tag-domain{background:#1a2d4a;color:var(--blue-lt);border:1px solid #1f3d6b;}
+.tag-type{background:#1e1a2e;color:#b695f8;border:1px solid #3d2d6b;}
+.tag-diff{border:1px solid var(--border);color:var(--muted);}
+.tag-diff.med{background:#1e1a0e;color:var(--yellow);border-color:#4a3800;}
+.tag-diff.hard{background:#1e0d0d;color:var(--red);border-color:#4a1000;}
 
-  .question-text {
-    font-size: 16px;
-    line-height: 1.7;
-    margin-bottom: 8px;
-  }
+.q-arrow{color:var(--border);font-size:20px;flex-shrink:0;transition:color .15s;}
+.q-card:hover .q-arrow{color:var(--blue-lt);}
 
-  .question-sub {
-    font-size: 13px;
-    color: var(--text-muted);
-    line-height: 1.6;
-  }
+.coming-soon{
+  opacity:.45;pointer-events:none;
+}
+.coming-soon .q-num{color:var(--muted);}
 
-  .divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 24px 0;
-  }
-
-  /* ── Work area ── */
-  .work-area {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  @media (max-width: 600px) {
-    .work-area { grid-template-columns: 1fr; }
-  }
-
-  .column-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 12px;
-    padding-left: 2px;
-  }
-
-  /* ── Source chips (draggable) ── */
-  .source-pool {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-height: 300px;
-  }
-
-  .chip {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 16px;
-    cursor: grab;
-    user-select: none;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    transition: border-color .15s, background .15s, opacity .15s, transform .1s;
-    font-size: 14px;
-    font-weight: 600;
-  }
-  .chip:active { cursor: grabbing; transform: scale(1.02); }
-  .chip.dragging { opacity: .4; }
-  .chip:hover { border-color: var(--blue-light); }
-
-  .chip-port {
-    background: var(--blue);
-    color: #fff;
-    border-radius: 5px;
-    padding: 2px 8px;
-    font-size: 12px;
-    font-weight: 700;
-    white-space: nowrap;
-    min-width: 52px;
-    text-align: center;
-  }
-
-  /* ── Drop zones ── */
-  .drop-column {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .drop-zone {
-    background: var(--surface);
-    border: 2px dashed var(--border);
-    border-radius: 8px;
-    padding: 14px 16px;
-    min-height: 56px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    transition: border-color .15s, background .15s;
-    position: relative;
-  }
-  .drop-zone.drag-over {
-    background: var(--drag-over);
-    border-color: var(--drag-over-border);
-  }
-  .drop-zone .description {
-    font-size: 13px;
-    color: var(--text-muted);
-    flex: 1;
-    line-height: 1.4;
-  }
-  .drop-zone .placeholder {
-    font-size: 12px;
-    color: var(--border);
-    font-style: italic;
-    position: absolute;
-    left: 16px;
-    pointer-events: none;
-  }
-  .drop-zone.correct {
-    background: var(--correct);
-    border-color: var(--correct-border);
-    border-style: solid;
-  }
-  .drop-zone.wrong {
-    background: var(--wrong);
-    border-color: var(--wrong-border);
-    border-style: solid;
-  }
-
-  /* ── Chip inside drop zone ── */
-  .chip.placed {
-    flex: 0 0 auto;
-    margin: 0;
-    font-size: 13px;
-    padding: 6px 12px;
-  }
-
-  /* ── Actions ── */
-  .actions {
-    max-width: 900px;
-    margin: 24px auto 0;
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  button {
-    padding: 10px 24px;
-    border-radius: 8px;
-    border: none;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background .15s, transform .08s;
-  }
-  button:active { transform: scale(.97); }
-
-  .btn-submit {
-    background: var(--accent);
-    color: #fff;
-  }
-  .btn-submit:hover { background: var(--accent-hover); }
-  .btn-submit:disabled {
-    background: var(--surface2);
-    color: var(--text-muted);
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  .btn-reset {
-    background: var(--surface2);
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
-  .btn-reset:hover { border-color: var(--text-muted); }
-
-  .score-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    padding: 10px 18px;
-    border-radius: 8px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-  }
-
-  /* ── Explanation panel ── */
-  .explanation {
-    max-width: 900px;
-    margin: 20px auto 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    display: none;
-  }
-  .explanation.show { display: block; }
-
-  .explanation-header {
-    background: var(--surface2);
-    border-bottom: 1px solid var(--border);
-    padding: 14px 24px;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-
-  .explanation-body {
-    padding: 20px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .exp-row {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 0 16px;
-    align-items: start;
-    padding: 14px;
-    border-radius: 8px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-  }
-  .exp-row.correct-row { border-color: var(--correct-border); }
-  .exp-row.wrong-row   { border-color: var(--wrong-border); }
-
-  .exp-icon { font-size: 18px; margin-top: 1px; }
-  .exp-content { font-size: 13px; line-height: 1.6; }
-  .exp-content strong { color: var(--text); font-weight: 600; }
-  .exp-content .your-ans { color: var(--danger); }
-  .exp-content .right-ans { color: var(--correct-border); }
-  .exp-note {
-    margin-top: 4px;
-    color: var(--text-muted);
-    font-size: 12.5px;
-  }
-
-  .exp-footer {
-    padding: 14px 24px;
-    border-top: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--text-muted);
-    line-height: 1.6;
-  }
-  .exp-footer strong { color: var(--text); }
-
-  /* ── Touch drag hint ── */
-  .hint {
-    font-size: 12px;
-    color: var(--text-muted);
-    max-width: 900px;
-    margin: 0 auto 16px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+.footer{max-width:780px;margin:48px auto 0;text-align:center;font-size:12px;color:var(--muted);line-height:1.8;}
+.footer a{color:var(--blue-lt);text-decoration:none;}
 </style>
 </head>
 <body>
 
-<div class="exam-header">
-  <span class="exam-badge">Performance-Based</span>
-  <span class="exam-title">CompTIA Security+ SY0-701 · Domain 4: Network Security</span>
+<div class="hero">
+  <div class="hero-badge">Performance-Based Questions</div>
+  <h1>CompTIA <span>Security+</span> SY0-701<br>Interactive Practice Lab</h1>
+  <p>Drag-and-drop, dropdown, and scenario-based questions modelled after the real exam format. Complete each question and receive immediate feedback with detailed explanations.</p>
 </div>
 
-<div class="card">
-  <div class="question-label">Question 1 of 1</div>
-  <p class="question-text">
-    A network administrator is reviewing an organization's firewall policy and needs to identify
-    which <strong>well-known TCP/UDP port</strong> corresponds to each listed service or protocol.
-  </p>
-  <hr class="divider" />
-  <p class="question-sub">
-    Drag each <strong>port label</strong> on the left to the correct <strong>service description</strong> on the right.
-    Each port is used exactly once. Click <strong>Submit Answer</strong> when finished.
-  </p>
-</div>
+<!-- Domain 4 -->
+<div class="domain-section">
+  <div class="domain-label">Domain 4 — Network Security</div>
+  <div class="cards">
 
-<div class="hint">
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-  Drag a port label onto a description slot. Click it again inside a slot to return it to the pool.
-</div>
+    <a class="q-card" href="q1-port-matching.html">
+      <div class="q-num">Q1</div>
+      <div class="q-info">
+        <div class="q-title">Port-to-Protocol Matching</div>
+        <div class="q-desc">Drag well-known TCP/UDP port labels to their correct service descriptions. Covers SSH, HTTPS, DNS, SMTP, RDP, and LDAP.</div>
+        <div class="q-tags">
+          <span class="tag tag-domain">Domain 4</span>
+          <span class="tag tag-type">Drag &amp; Drop</span>
+          <span class="tag tag-diff med">Medium</span>
+        </div>
+      </div>
+      <div class="q-arrow">›</div>
+    </a>
 
-<div class="work-area">
-  <div>
-    <div class="column-label">Port Labels — drag to match</div>
-    <div class="source-pool" id="pool"></div>
+    <a class="q-card" href="q2-nat-firewall.html">
+      <div class="q-num">Q2</div>
+      <div class="q-info">
+        <div class="q-title">NAPT Firewall — Socket Translation</div>
+        <div class="q-desc">Use dropdown selectors to identify the correct IP:port socket at each hop through a NAPT firewall. Covers PAT, topology hiding, and state tables.</div>
+        <div class="q-tags">
+          <span class="tag tag-domain">Domain 4</span>
+          <span class="tag tag-type">Dropdown</span>
+          <span class="tag tag-diff hard">Hard</span>
+        </div>
+      </div>
+      <div class="q-arrow">›</div>
+    </a>
+
+    <div class="q-card coming-soon">
+      <div class="q-num" style="font-size:22px;">＋</div>
+      <div class="q-info">
+        <div class="q-title" style="color:var(--muted);">More questions coming soon…</div>
+        <div class="q-desc">Firewall ACL ordering, VLAN segmentation, VPN tunnel configuration, and more.</div>
+        <div class="q-tags">
+          <span class="tag tag-domain">Domain 4</span>
+        </div>
+      </div>
+      <div class="q-arrow">›</div>
+    </div>
+
   </div>
-  <div>
-    <div class="column-label">Service Descriptions — drop here</div>
-    <div class="drop-column" id="dropColumn"></div>
-  </div>
 </div>
 
-<div class="actions">
-  <button class="btn-submit" id="btnSubmit" disabled>Submit Answer</button>
-  <button class="btn-reset" id="btnReset">Reset</button>
-  <span class="score-badge" id="scoreBadge" style="display:none"></span>
+<div class="footer">
+  Practice questions created for self-study purposes. Not affiliated with CompTIA.<br>
+  Reference: <a href="https://www.comptia.org/certifications/security" target="_blank">comptia.org/certifications/security</a>
 </div>
 
-<div class="explanation" id="explanation">
-  <div class="explanation-header">Answer Key &amp; Explanation</div>
-  <div class="explanation-body" id="explanationBody"></div>
-  <div class="exp-footer">
-    <strong>Exam Tip:</strong>
-    Port numbers below 1024 are "well-known" ports (IANA registered). Security+ frequently tests
-    whether candidates know which ports are encrypted vs. cleartext and which services share similar
-    port ranges (e.g., LDAP 389 vs. LDAPS 636, HTTP 80 vs. HTTPS 443, Telnet 23 vs. SSH 22).
-    Remember: <strong>53 = DNS</strong>, <strong>67/68 = DHCP</strong>,
-    <strong>110/995 = POP3</strong>, <strong>143/993 = IMAP</strong>.
-  </div>
-</div>
-
-<script>
-// ── Data ────────────────────────────────────────────────────────────────────
-const ITEMS = [
-  {
-    id: 'p22',
-    port: '22 / TCP',
-    service: 'SSH',
-    desc: 'Provides encrypted remote shell access and secure file transfer (SFTP/SCP) between hosts.',
-    note: 'SSH replaced the cleartext Telnet (port 23). Its encryption makes it the standard for remote administration.',
-  },
-  {
-    id: 'p443',
-    port: '443 / TCP',
-    service: 'HTTPS',
-    desc: 'Delivers encrypted web traffic using TLS; the secure version of the standard web protocol.',
-    note: 'HTTPS wraps HTTP inside TLS. HTTP (port 80) sends data in cleartext — a classic Security+ distinction.',
-  },
-  {
-    id: 'p53',
-    port: '53 / UDP',
-    service: 'DNS',
-    desc: 'Resolves human-readable domain names (e.g., example.com) into IP addresses.',
-    note: 'DNS uses UDP for queries and TCP for zone transfers. DNS poisoning and DNS tunnelling are common attack vectors.',
-  },
-  {
-    id: 'p25',
-    port: '25 / TCP',
-    service: 'SMTP',
-    desc: 'Handles outbound email transmission between mail transfer agents (MTAs) on the Internet.',
-    note: 'SMTP (25) sends mail; POP3 (110) and IMAP (143) retrieve it. Port 587 is used for authenticated submission.',
-  },
-  {
-    id: 'p3389',
-    port: '3389 / TCP',
-    service: 'RDP',
-    desc: 'Allows graphical remote desktop sessions to Windows systems over a network.',
-    note: 'RDP is a frequent ransomware attack vector. Exposing port 3389 directly to the Internet is a critical misconfiguration.',
-  },
-  {
-    id: 'p389',
-    port: '389 / TCP',
-    service: 'LDAP',
-    desc: 'Queries and modifies directory services such as Active Directory user accounts and group memberships.',
-    note: 'LDAP (389) is cleartext. LDAPS (636) encrypts the same traffic with TLS — always prefer LDAPS in production.',
-  },
-];
-
-// Shuffle helper
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-// ── State ────────────────────────────────────────────────────────────────────
-let chipSlot = {}; // zoneId → itemId | null
-let submitted = false;
-
-// ── Build DOM ────────────────────────────────────────────────────────────────
-const pool       = document.getElementById('pool');
-const dropColumn = document.getElementById('dropColumn');
-const btnSubmit  = document.getElementById('btnSubmit');
-const btnReset   = document.getElementById('btnReset');
-const scoreBadge = document.getElementById('scoreBadge');
-const explanation     = document.getElementById('explanation');
-const explanationBody = document.getElementById('explanationBody');
-
-// Shuffled order for descriptions (zones) vs chips
-const shuffledForPool  = shuffle(ITEMS);
-const shuffledForZones = shuffle(ITEMS);
-
-function buildPool() {
-  pool.innerHTML = '';
-  shuffledForPool.forEach(item => {
-    const chip = makeChip(item);
-    pool.appendChild(chip);
-  });
-}
-
-function buildZones() {
-  dropColumn.innerHTML = '';
-  chipSlot = {};
-  shuffledForZones.forEach(item => {
-    const zone = document.createElement('div');
-    zone.className = 'drop-zone';
-    zone.dataset.zoneId = item.id + '_zone';
-    zone.dataset.answer = item.id; // correct chip id for this zone
-
-    const ph = document.createElement('span');
-    ph.className = 'placeholder';
-    ph.textContent = 'Drop port here…';
-    zone.appendChild(ph);
-
-    const desc = document.createElement('span');
-    desc.className = 'description';
-    desc.textContent = item.desc;
-    zone.appendChild(desc);
-
-    chipSlot[zone.dataset.zoneId] = null;
-
-    // Desktop DnD
-    zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag-over'); });
-    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-    zone.addEventListener('drop',      e => handleDrop(e, zone));
-
-    dropColumn.appendChild(zone);
-  });
-}
-
-function makeChip(item) {
-  const chip = document.createElement('div');
-  chip.className = 'chip';
-  chip.draggable = true;
-  chip.dataset.itemId = item.id;
-
-  const portBadge = document.createElement('span');
-  portBadge.className = 'chip-port';
-  portBadge.textContent = item.port;
-
-  const label = document.createElement('span');
-  label.textContent = item.service;
-
-  chip.appendChild(portBadge);
-  chip.appendChild(label);
-
-  // Desktop DnD
-  chip.addEventListener('dragstart', e => {
-    e.dataTransfer.setData('itemId', item.id);
-    chip.classList.add('dragging');
-  });
-  chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
-
-  // Click-to-return (from zone back to pool)
-  chip.addEventListener('click', () => {
-    if (submitted) return;
-    const parent = chip.parentElement;
-    if (parent !== pool) {
-      // Return to pool
-      const zoneId = parent.dataset.zoneId;
-      chipSlot[zoneId] = null;
-      parent.querySelector('.placeholder').style.display = '';
-      chip.classList.remove('placed');
-      chip.draggable = true;
-      pool.appendChild(chip);
-      updateSubmit();
-    }
-  });
-
-  // Touch drag
-  let touchStartX, touchStartY, clone;
-  chip.addEventListener('touchstart', e => {
-    if (submitted) return;
-    const t = e.touches[0];
-    touchStartX = t.clientX; touchStartY = t.clientY;
-    clone = chip.cloneNode(true);
-    clone.style.cssText = `position:fixed;opacity:.85;pointer-events:none;z-index:9999;
-      left:${t.clientX - chip.offsetWidth/2}px;top:${t.clientY - 28}px;
-      width:${chip.offsetWidth}px;`;
-    document.body.appendChild(clone);
-    chip.classList.add('dragging');
-    e.preventDefault();
-  }, { passive: false });
-
-  chip.addEventListener('touchmove', e => {
-    if (!clone) return;
-    const t = e.touches[0];
-    clone.style.left = `${t.clientX - chip.offsetWidth/2}px`;
-    clone.style.top  = `${t.clientY - 28}px`;
-    e.preventDefault();
-  }, { passive: false });
-
-  chip.addEventListener('touchend', e => {
-    if (!clone) return;
-    const t = e.changedTouches[0];
-    document.body.removeChild(clone); clone = null;
-    chip.classList.remove('dragging');
-    const el = document.elementFromPoint(t.clientX, t.clientY);
-    const zone = el?.closest('.drop-zone');
-    if (zone) dropChipIntoZone(item.id, zone);
-  });
-
-  return chip;
-}
-
-// ── DnD logic ────────────────────────────────────────────────────────────────
-function handleDrop(e, zone) {
-  e.preventDefault();
-  zone.classList.remove('drag-over');
-  const itemId = e.dataTransfer.getData('itemId');
-  dropChipIntoZone(itemId, zone);
-}
-
-function dropChipIntoZone(itemId, zone) {
-  if (submitted) return;
-
-  // If zone already has a chip, eject it back to pool
-  const existing = chipSlot[zone.dataset.zoneId];
-  if (existing) {
-    const oldChip = dropColumn.querySelector(`[data-item-id="${existing}"]`);
-    if (oldChip) {
-      oldChip.classList.remove('placed');
-      oldChip.draggable = true;
-      pool.appendChild(oldChip);
-    }
-  }
-
-  // Find the chip (could be in pool or another zone)
-  const chip = document.querySelector(`[data-item-id="${itemId}"]`);
-  if (!chip) return;
-
-  // If it was in another zone, clear that zone
-  for (const [zid, cid] of Object.entries(chipSlot)) {
-    if (cid === itemId && zid !== zone.dataset.zoneId) {
-      chipSlot[zid] = null;
-      const otherZone = dropColumn.querySelector(`[data-zone-id="${zid}"]`)
-        || dropColumn.querySelector(`[data-zone-id="${zid}"]`);
-      // find by dataset
-      document.querySelectorAll('.drop-zone').forEach(z => {
-        if (z.dataset.zoneId === zid) z.querySelector('.placeholder').style.display = '';
-      });
-    }
-  }
-
-  chipSlot[zone.dataset.zoneId] = itemId;
-  chip.classList.add('placed');
-  zone.querySelector('.placeholder').style.display = 'none';
-
-  // Move chip DOM into zone (before description)
-  zone.insertBefore(chip, zone.querySelector('.description'));
-
-  updateSubmit();
-}
-
-function updateSubmit() {
-  const filled = Object.values(chipSlot).filter(Boolean).length;
-  btnSubmit.disabled = filled < ITEMS.length;
-}
-
-// ── Submit ────────────────────────────────────────────────────────────────────
-btnSubmit.addEventListener('click', () => {
-  if (submitted) return;
-  submitted = true;
-  btnSubmit.disabled = true;
-
-  let correct = 0;
-  const results = [];
-
-  document.querySelectorAll('.drop-zone').forEach(zone => {
-    const answerId  = zone.dataset.answer;       // correct chip id
-    const placedId  = chipSlot[zone.dataset.zoneId];
-    const isCorrect = placedId === answerId;
-    if (isCorrect) correct++;
-
-    zone.classList.add(isCorrect ? 'correct' : 'wrong');
-
-    const item     = ITEMS.find(i => i.id === answerId);
-    const placed   = ITEMS.find(i => i.id === placedId);
-    results.push({ item, placed, isCorrect });
-  });
-
-  // Score badge
-  const pct = Math.round((correct / ITEMS.length) * 100);
-  scoreBadge.style.display = 'inline-flex';
-  scoreBadge.innerHTML = `
-    <span style="font-size:18px">${pct >= 70 ? '✅' : '❌'}</span>
-    <span>${correct} / ${ITEMS.length} correct &nbsp;(${pct}%)</span>
-    <span style="color:var(--text-muted);font-weight:400;font-size:12px">
-      ${pct >= 70 ? '— PASS' : '— BELOW PASSING'}
-    </span>`;
-
-  // Explanation panel
-  explanationBody.innerHTML = '';
-  results.forEach(({ item, placed, isCorrect }) => {
-    const row = document.createElement('div');
-    row.className = `exp-row ${isCorrect ? 'correct-row' : 'wrong-row'}`;
-
-    const icon = document.createElement('span');
-    icon.className = 'exp-icon';
-    icon.textContent = isCorrect ? '✅' : '❌';
-
-    const content = document.createElement('div');
-    content.className = 'exp-content';
-
-    const head = `<strong>${item.port} → ${item.service}</strong>`;
-    const answerLine = isCorrect
-      ? `<div>Your answer: <span class="right-ans">${placed?.port} (${placed?.service})</span> — Correct!</div>`
-      : `<div>Your answer: <span class="your-ans">${placed?.port} (${placed?.service})</span>
-           &nbsp;|&nbsp; Correct: <span class="right-ans">${item.port} (${item.service})</span></div>`;
-
-    content.innerHTML = `${head}${answerLine}<div class="exp-note">${item.note}</div>`;
-
-    row.appendChild(icon);
-    row.appendChild(content);
-    explanationBody.appendChild(row);
-  });
-
-  explanation.classList.add('show');
-  explanation.scrollIntoView({ behavior: 'smooth', block: 'start' });
-});
-
-// ── Reset ────────────────────────────────────────────────────────────────────
-btnReset.addEventListener('click', () => {
-  submitted = false;
-  scoreBadge.style.display = 'none';
-  explanation.classList.remove('show');
-  explanationBody.innerHTML = '';
-  buildZones();
-  buildPool();
-  updateSubmit();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
-// ── Pool DnD accept (return) ─────────────────────────────────────────────────
-pool.addEventListener('dragover',  e => e.preventDefault());
-pool.addEventListener('drop', e => {
-  e.preventDefault();
-  const itemId = e.dataTransfer.getData('itemId');
-  const chip = document.querySelector(`[data-item-id="${itemId}"]`);
-  if (!chip || chip.parentElement === pool) return;
-  // Clear its zone
-  for (const [zid, cid] of Object.entries(chipSlot)) {
-    if (cid === itemId) {
-      chipSlot[zid] = null;
-      document.querySelectorAll('.drop-zone').forEach(z => {
-        if (z.dataset.zoneId === zid) z.querySelector('.placeholder').style.display = '';
-      });
-    }
-  }
-  chip.classList.remove('placed');
-  chip.draggable = true;
-  pool.appendChild(chip);
-  updateSubmit();
-});
-
-// ── Init ─────────────────────────────────────────────────────────────────────
-buildZones();
-buildPool();
-</script>
 </body>
 </html>
