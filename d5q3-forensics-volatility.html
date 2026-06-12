@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>D5Q3 — Digital Forensics: Order of Volatility</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--blue:#1f6feb;--blue-lt:#388bfd;--purple:#8957e5;--green:#2ea043;--green-bg:#0d2318;--green-border:#196c2e;--red:#da3633;--red-bg:#1e0d0d;--red-border:#6e1a1a;--yellow:#d29922;--accent:#238636;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding:0 0 80px;}
+.top-bar{display:flex;align-items:center;gap:12px;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;flex-wrap:wrap;}
+.badge{background:var(--purple);color:#fff;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.top-title{flex:1;font-size:13px;color:var(--muted);min-width:0;}
+.back-link{font-size:13px;color:var(--blue-lt);text-decoration:none;white-space:nowrap;}
+.back-link:hover{text-decoration:underline;}
+.page{max-width:920px;margin:0 auto;padding:32px 16px;}
+.scenario-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;}
+.sc-title{font-size:18px;font-weight:700;margin-bottom:8px;}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;letter-spacing:.04em;}
+.tag-domain{background:#1a2d4a;color:var(--blue-lt);border:1px solid #1f3d6b;}
+.tag-type{background:#1e1a2e;color:#b695f8;border:1px solid #3d2d6b;}
+.tag-diff.hard{background:#1e0d0d;color:#f85149;border:1px solid #4a1000;}
+.scenario-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;font-size:14px;line-height:1.7;}
+.scenario-box strong{color:var(--blue-lt);}
+.instructions{font-size:13px;color:var(--muted);line-height:1.6;}
+/* Table layout */
+.evidence-table{width:100%;border-collapse:collapse;margin-bottom:24px;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.evidence-table thead th{background:var(--surface2);padding:12px 16px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:1px solid var(--border);}
+.evidence-table tbody tr{border-bottom:1px solid var(--border);}
+.evidence-table tbody tr:last-child{border-bottom:none;}
+.evidence-table td{padding:14px 16px;font-size:13px;vertical-align:middle;}
+.evidence-table td:first-child{font-weight:600;color:var(--text);width:38%;}
+.evidence-table td:nth-child(2){color:var(--muted);width:35%;}
+.evidence-table td:nth-child(3){width:27%;}
+.evidence-table select{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:12px;appearance:none;cursor:pointer;transition:border-color .15s;}
+.evidence-table select:focus{outline:none;border-color:var(--blue-lt);}
+.evidence-table select.correct{border-color:var(--green-border);background:var(--green-bg);}
+.evidence-table select.wrong{border-color:var(--red-border);background:var(--red-bg);}
+.row-result{font-size:11px;margin-top:4px;display:none;}
+.row-result.correct{color:#3fb950;display:block;}
+.row-result.wrong{color:#f85149;display:block;}
+.actions{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
+.btn-submit{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-submit:disabled{opacity:.4;cursor:not-allowed;}
+.btn-reset{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-reset:hover{border-color:var(--muted);color:var(--text);}
+.score-badge{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:14px;font-weight:700;}
+.explanation{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:none;}
+.exp-header{padding:14px 20px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);}
+.exp-row{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;}
+.exp-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.exp-content{flex:1;}
+.exp-label{font-weight:700;font-size:13px;color:var(--blue-lt);margin-bottom:3px;}
+.exp-answer{font-size:12px;font-weight:600;color:#3fb950;margin-bottom:5px;}
+.exp-text{font-size:13px;color:var(--muted);line-height:1.6;}
+.exp-tip{margin:0 20px 20px;padding:14px 16px;background:#1a1f2e;border:1px solid #2a3a6e;border-radius:8px;font-size:13px;color:#a0b4e8;line-height:1.6;}
+.exp-tip strong{color:var(--blue-lt);}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <span class="badge">Performance-Based</span>
+  <span class="top-title">CompTIA Security+ SY0-701 · Domain 5: Security Program Management &amp; Oversight · Digital Forensics</span>
+  <a class="back-link" href="index.html">← All Questions</a>
+</div>
+<div class="page">
+  <div class="scenario-card">
+    <div class="sc-title">Digital Forensics — Order of Volatility &amp; Evidence Handling</div>
+    <div class="tags">
+      <span class="tag tag-domain">Domain 5</span>
+      <span class="tag tag-type">Dropdown</span>
+      <span class="tag tag-diff hard">Hard</span>
+    </div>
+    <div class="scenario-box">
+      A digital forensics examiner responds to a live incident at <strong>Meridian Insurance</strong>:
+      a Linux web server (still powered on) is suspected of being actively compromised. The examiner
+      must collect evidence in the correct order — from most volatile to least volatile — to ensure
+      no evidence is lost before more stable data is captured.<br><br>
+      For each of the seven evidence sources listed below, assign the correct <strong>collection
+      priority</strong> (1 = collect first / most volatile, 7 = collect last / least volatile).
+      Each priority number may only be used once. Then select the correct <strong>handling action</strong>
+      for each source.
+    </div>
+    <div class="instructions">Set both the collection priority and the handling action for all seven evidence sources, then submit.</div>
+  </div>
+
+  <table class="evidence-table" id="evidenceTable">
+    <thead>
+      <tr>
+        <th>Evidence Source</th>
+        <th>Description</th>
+        <th>Priority (1=first) &amp; Handling</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+
+  <div class="actions">
+    <button class="btn-submit" id="btnSubmit" disabled>Submit Answer</button>
+    <button class="btn-reset" id="btnReset">Reset</button>
+    <span class="score-badge" id="scoreBadge" style="display:none;"></span>
+  </div>
+  <div class="explanation" id="explanation">
+    <div class="exp-header">Answer Explanations</div>
+    <div class="exp-tip" id="expTip"></div>
+  </div>
+</div>
+<script>
+const EVIDENCE=[
+  {id:'e1',source:'CPU Registers &amp; Cache',desc:'Current processor state: instruction pointer, register values, and L1/L2 cache contents.',priority:'1',handling:'Capture via live memory tool immediately — lost on any reboot or context switch.',explanation:'CPU registers and cache are the most volatile evidence — they change with every clock cycle and are completely lost the moment the processor context switches or the system is rebooted. A live memory acquisition tool (e.g., Volatility, WinPmem) must be the very first action. This data cannot be recovered after shutdown.'},
+  {id:'e2',source:'RAM / System Memory',desc:'Running processes, open network sockets, encryption keys in memory, and loaded kernel modules.',priority:'2',handling:'Acquire full memory dump using a forensic tool before any other on-system action.',explanation:'RAM contents persist only while the system is powered on. Encryption keys, running malware, and live network connections all exist in RAM and are irrecoverable after shutdown. A full memory dump (dd, LiME kernel module, Magnet RAM Capture) must be taken before anything else modifies process state — making it second only to CPU registers in collection priority.'},
+  {id:'e3',source:'Network State (ARP Cache, Routing Table, Active Connections)',desc:'Current ARP table, active TCP sessions (netstat), and routing entries in the kernel.',priority:'3',handling:'Record output of netstat -anp, arp -n, and ip route; screenshot or pipe to write-once media.',explanation:'ARP cache entries time out within minutes and active TCP sessions disappear if the NIC is disconnected. Network state captures who the server was communicating with at the moment of compromise — including C2 connections. This must be captured before network isolation (which is a containment step that would destroy this evidence).'},
+  {id:'e4',source:'Running Processes &amp; Open File Handles',desc:'Process list (ps aux), open files per process (lsof), and loaded kernel modules (lsmod).',priority:'4',handling:'Run ps, lsof, and lsmod; save output to examiner-controlled write-once media.',explanation:'Running processes and open file handles are volatile but slightly more stable than network state — a process persists until it exits or is killed. Fileless malware exists only in process memory and the process list. Capturing this before any containment action prevents the loss of indicators such as unusual parent-child process relationships or memory-resident payloads.'},
+  {id:'e5',source:'Temporary Files &amp; Swap Space',desc:'Contents of /tmp, /var/tmp, and the system swap partition (/dev/sda2 — 8 GB).',priority:'5',handling:'Image the swap partition; copy /tmp and /var/tmp to write-once media.',explanation:'Temporary files and swap space are semi-volatile: they persist across process termination but may be overwritten by the OS at any time. Swap space can contain paged-out memory segments that include key forensic artifacts such as fragments of malware code, credentials, or decrypted data. They should be captured after live volatile data but well before disk imaging.'},
+  {id:'e6',source:'Hard Disk / SSD (Root &amp; Data Partitions)',desc:'The full 2 TB NVMe drive containing the OS, web application files, and database.',priority:'6',handling:'Create a forensic bit-for-bit image (dcfldd / FTK Imager) with MD5+SHA-256 hash verification; preserve original.',explanation:'Non-volatile disk storage is the most stable evidence on a live system — it persists across reboots and is not subject to the timing pressures of RAM or network state. However, every write to disk (even log rotation) can overwrite potential evidence, so the forensic image should be taken as soon as live volatile evidence is secured. The hash ensures chain-of-custody integrity.'},
+  {id:'e7',source:'Offline Backup Tapes (Last 30 Days)',desc:'LTO-8 tape cartridges stored in a fireproof safe in the server room — last backup: 02:00 AM today.',priority:'7',handling:'Place under legal hold; do not mount or access until authorized; document custody.',explanation:'Offline backup tapes are the least volatile evidence — they are write-protected once ejected and stored separately. They should be preserved under legal hold last because they are not at risk of being lost due to system activity. Premature mounting of tapes could be considered tampering; a chain-of-custody form and legal authorization should precede any access.'},
+];
+
+const PRIORITY_OPTS=[{v:'',l:'— Priority —'},{v:'1',l:'1 (first)'},{v:'2',l:'2'},{v:'3',l:'3'},{v:'4',l:'4'},{v:'5',l:'5'},{v:'6',l:'6'},{v:'7',l:'7 (last)'}];
+const HANDLING_OPTS=[
+  {v:'',l:'— Handling action —'},
+  {v:'live-capture',l:'Capture via live memory tool immediately'},
+  {v:'memory-dump',l:'Acquire full memory dump before other actions'},
+  {v:'record-output',l:'Record netstat/arp/ip route to write-once media'},
+  {v:'ps-lsof',l:'Run ps, lsof, lsmod; save to write-once media'},
+  {v:'image-tmp',l:'Image swap partition; copy /tmp to write-once media'},
+  {v:'forensic-image',l:'Forensic bit-for-bit image with hash verification'},
+  {v:'legal-hold',l:'Place under legal hold; document custody'},
+];
+const CORRECT_HANDLING={e1:'live-capture',e2:'memory-dump',e3:'record-output',e4:'ps-lsof',e5:'image-tmp',e6:'forensic-image',e7:'legal-hold'};
+
+let submitted=false;
+
+function buildTable(){
+  const tbody=document.getElementById('tableBody');
+  tbody.innerHTML='';
+  EVIDENCE.forEach(ev=>{
+    const tr=document.createElement('tr');
+    const priOpts=PRIORITY_OPTS.map(o=>`<option value="${o.v}">${o.l}</option>`).join('');
+    const handOpts=HANDLING_OPTS.map(o=>`<option value="${o.v}">${o.l}</option>`).join('');
+    tr.innerHTML=`
+      <td>${ev.source}</td>
+      <td>${ev.desc}</td>
+      <td>
+        <select id="pri-${ev.id}">${priOpts}</select>
+        <select id="han-${ev.id}" style="margin-top:6px;">${handOpts}</select>
+        <div class="row-result" id="res-${ev.id}"></div>
+      </td>`;
+    tbody.appendChild(tr);
+    document.getElementById('pri-'+ev.id).addEventListener('change',updateSubmit);
+    document.getElementById('han-'+ev.id).addEventListener('change',updateSubmit);
+  });
+}
+
+function updateSubmit(){
+  const allSet=EVIDENCE.every(ev=>
+    document.getElementById('pri-'+ev.id).value!==''&&
+    document.getElementById('han-'+ev.id).value!==''
+  );
+  document.getElementById('btnSubmit').disabled=!allSet||submitted;
+}
+
+document.getElementById('btnSubmit').addEventListener('click',()=>{
+  if(submitted)return;
+  submitted=true;
+  document.getElementById('btnSubmit').disabled=true;
+  let correct=0,total=EVIDENCE.length*2;
+
+  EVIDENCE.forEach(ev=>{
+    const priSel=document.getElementById('pri-'+ev.id);
+    const hanSel=document.getElementById('han-'+ev.id);
+    const priOk=priSel.value===ev.priority;
+    const hanOk=hanSel.value===CORRECT_HANDLING[ev.id];
+    if(priOk)correct++;
+    if(hanOk)correct++;
+    priSel.disabled=true;
+    hanSel.disabled=true;
+    priSel.classList.add(priOk?'correct':'wrong');
+    hanSel.classList.add(hanOk?'correct':'wrong');
+    const res=document.getElementById('res-'+ev.id);
+    if(priOk&&hanOk){res.className='row-result correct';res.textContent='✅ Both correct';}
+    else{res.className='row-result wrong';res.textContent=`❌ Priority: ${priOk?'✓':'✗ (correct: '+ev.priority+')'} | Handling: ${hanOk?'✓':'✗'}`;}
+  });
+
+  const pct=Math.round(correct/total*100);
+  const badge=document.getElementById('scoreBadge');
+  badge.style.display='flex';
+  badge.innerHTML=`<span style="font-size:18px">${pct>=70?'✅':'❌'}</span><span>${correct}/${total} correct (${pct}%)</span><span style="color:var(--muted);font-weight:400;font-size:12px">${pct>=70?' — PASS':' — BELOW PASSING'}</span>`;
+
+  const expPanel=document.getElementById('explanation');
+  expPanel.style.display='block';
+  const tip=document.getElementById('expTip');
+
+  EVIDENCE.forEach((ev,i)=>{
+    const priSel=document.getElementById('pri-'+ev.id);
+    const hanSel=document.getElementById('han-'+ev.id);
+    const priOk=priSel.value===ev.priority;
+    const hanOk=hanSel.value===CORRECT_HANDLING[ev.id];
+    const ok=priOk&&hanOk;
+    const row=document.createElement('div');
+    row.className='exp-row';
+    row.innerHTML=`<span class="exp-icon">${ok?'✅':'❌'}</span><div class="exp-content"><div class="exp-label">${ev.source}</div><div class="exp-answer">Priority: ${ev.priority} | ${HANDLING_OPTS.find(o=>o.v===CORRECT_HANDLING[ev.id]).l}</div><div class="exp-text">${ev.explanation}</div></div>`;
+    expPanel.insertBefore(row,tip);
+  });
+
+  tip.innerHTML=`<strong>Exam Tip:</strong> The order of volatility is defined in RFC 3227 ("Guidelines for Evidence Collection and Archiving"). The canonical order from most to least volatile is: <em>registers/cache → RAM → network state → running processes → temporary files/swap → disk → remote logging → physical configuration → archival media</em>. The two most common exam traps are: (1) students collect <em>disk before RAM</em> — wrong, disk is more stable; (2) students forget that <em>network isolation (containment) destroys network state evidence</em> — always capture ARP/netstat before disconnecting the NIC. Chain of custody requires documenting every person who touched evidence, when, and why — a gap breaks admissibility.`;
+  expPanel.scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+document.getElementById('btnReset').addEventListener('click',()=>{
+  submitted=false;
+  document.querySelectorAll('.exp-row').forEach(r=>r.remove());
+  document.getElementById('expTip').innerHTML='';
+  document.getElementById('explanation').style.display='none';
+  document.getElementById('scoreBadge').style.display='none';
+  buildTable();
+  updateSubmit();
+});
+
+buildTable();
+updateSubmit();
+</script>
+</body>
+</html>

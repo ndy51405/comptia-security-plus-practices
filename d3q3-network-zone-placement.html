@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>D3Q3 — Network Zone Device Placement</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--blue:#1f6feb;--blue-lt:#388bfd;--purple:#8957e5;--green:#2ea043;--green-bg:#0d2318;--green-border:#196c2e;--red:#da3633;--red-bg:#1e0d0d;--red-border:#6e1a1a;--yellow:#d29922;--accent:#238636;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding:0 0 80px;}
+.top-bar{display:flex;align-items:center;gap:12px;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;flex-wrap:wrap;}
+.badge{background:var(--purple);color:#fff;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.top-title{flex:1;font-size:13px;color:var(--muted);min-width:0;}
+.back-link{font-size:13px;color:var(--blue-lt);text-decoration:none;white-space:nowrap;}
+.back-link:hover{text-decoration:underline;}
+.page{max-width:860px;margin:0 auto;padding:32px 16px;}
+.scenario-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;}
+.sc-title{font-size:18px;font-weight:700;margin-bottom:8px;}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;letter-spacing:.04em;}
+.tag-domain{background:#1a2d4a;color:var(--blue-lt);border:1px solid #1f3d6b;}
+.tag-type{background:#1e1a2e;color:#b695f8;border:1px solid #3d2d6b;}
+.tag-diff.hard{background:#1e0d0d;color:#f85149;border:1px solid #4a1000;}
+.scenario-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;font-size:14px;line-height:1.7;}
+.scenario-box strong{color:var(--blue-lt);}
+.zone-legend{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 0;}
+.zone-pill{font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;border:1px solid var(--border);}
+.zone-dmz{background:#1a2020;color:#4ec9b0;border-color:#2a5050;}
+.zone-internal{background:#1a2540;color:var(--blue-lt);border-color:#2a4070;}
+.zone-mgmt{background:#2a1a2e;color:#c586c0;border-color:#5a2a6e;}
+.instructions{font-size:13px;color:var(--muted);line-height:1.6;}
+.q-rows{display:flex;flex-direction:column;gap:14px;margin-bottom:24px;}
+.q-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;}
+.q-row-num{width:28px;height:28px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--muted);flex-shrink:0;margin-top:2px;}
+.q-row-body{flex:1;min-width:200px;}
+.device-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.device-desc{font-size:13px;line-height:1.6;color:var(--muted);margin-bottom:10px;}
+.req{display:inline-block;background:#1a2540;color:var(--blue-lt);border:1px solid #2a4070;border-radius:4px;padding:1px 7px;font-size:12px;font-weight:600;margin:0 2px;white-space:nowrap;}
+.q-row select{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:13px;appearance:none;cursor:pointer;transition:border-color .15s;}
+.q-row select:focus{outline:none;border-color:var(--blue-lt);}
+.q-row select.correct{border-color:var(--green-border);background:var(--green-bg);}
+.q-row select.wrong{border-color:var(--red-border);background:var(--red-bg);}
+.q-row-result{font-size:12px;margin-top:6px;display:none;}
+.q-row-result.correct{color:#3fb950;display:block;}
+.q-row-result.wrong{color:#f85149;display:block;}
+.actions{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
+.btn-submit{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-submit:disabled{opacity:.4;cursor:not-allowed;}
+.btn-reset{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-reset:hover{border-color:var(--muted);color:var(--text);}
+.score-badge{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:14px;font-weight:700;}
+.explanation{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:none;}
+.exp-header{padding:14px 20px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);}
+.exp-row{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;}
+.exp-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.exp-content{flex:1;}
+.exp-label{font-weight:700;font-size:13px;color:var(--blue-lt);margin-bottom:4px;}
+.exp-answer{font-size:12px;font-weight:600;color:#3fb950;margin-bottom:6px;}
+.exp-text{font-size:13px;color:var(--muted);line-height:1.6;}
+.exp-tip{margin:0 20px 20px;padding:14px 16px;background:#1a1f2e;border:1px solid #2a3a6e;border-radius:8px;font-size:13px;color:#a0b4e8;line-height:1.6;}
+.exp-tip strong{color:var(--blue-lt);}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <span class="badge">Performance-Based</span>
+  <span class="top-title">CompTIA Security+ SY0-701 · Domain 3: Security Architecture · Network Segmentation</span>
+  <a class="back-link" href="index.html">← All Questions</a>
+</div>
+<div class="page">
+  <div class="scenario-card">
+    <div class="sc-title">Network Zone Device Placement</div>
+    <div class="tags">
+      <span class="tag tag-domain">Domain 3</span>
+      <span class="tag tag-type">Dropdown</span>
+      <span class="tag tag-diff hard">Hard</span>
+    </div>
+    <div class="scenario-box">
+      The network architecture team at <strong>Solaris Financial Services</strong> is redesigning
+      their perimeter during a zero-trust migration. The new architecture divides all infrastructure
+      into three security zones, each with a distinct trust level and firewall policy:
+      <div class="zone-legend">
+        <span class="zone-pill zone-dmz">DMZ — semi-trusted; reachable from internet via firewall rules; must not directly access Trusted Internal</span>
+        <span class="zone-pill zone-internal">Trusted Internal — employee network; no direct inbound internet access; can initiate outbound</span>
+        <span class="zone-pill zone-mgmt">Management Network — isolated OOB segment; only admin stations; no general internet access; manages all infrastructure devices</span>
+      </div>
+      <br>For each of the seven enterprise assets below, assign the correct zone. Pay close attention to the trust boundaries — some devices are commonly misplaced.
+    </div>
+    <div class="instructions">Select the correct network zone for each device using the dropdown. All seven must be set before you can submit.</div>
+  </div>
+  <div class="q-rows" id="qRows"></div>
+  <div class="actions">
+    <button class="btn-submit" id="btnSubmit" disabled>Submit Answer</button>
+    <button class="btn-reset" id="btnReset">Reset</button>
+    <span class="score-badge" id="scoreBadge" style="display:none;"></span>
+  </div>
+  <div class="explanation" id="explanation">
+    <div class="exp-header">Answer Explanations</div>
+    <div class="exp-tip" id="expTip"></div>
+  </div>
+</div>
+<script>
+const ZONES_OPT=[{value:'',label:'— Select zone —'},{value:'DMZ',label:'DMZ'},{value:'Trusted Internal',label:'Trusted Internal'},{value:'Management Network',label:'Management Network'}];
+const QUESTIONS=[
+  {id:'q1',device:'Public-Facing HTTPS Web Server',desc:'Hosts the company\'s customer-facing website on TCP/443. External users worldwide must be able to reach it. It queries an internal application server on TCP/8080 for dynamic content.',answer:'DMZ',explanation:'The web server must be reachable from the internet, so it cannot be placed on the Trusted Internal network (no inbound internet access) or the Management Network (isolated from all internet). The DMZ is the correct zone: firewalls allow inbound TCP/443 from the internet and a separate rule permits the web server to query only the specific internal app server port — it cannot roam freely into the Trusted Internal network.'},
+  {id:'q2',device:'Internal Payroll Application Server',desc:'Runs the HR payroll system. Access is restricted to the internal HR team via TCP/8443. It must never be reachable from the internet and never initiates outbound connections.',answer:'Trusted Internal',explanation:'The payroll server has no internet-facing function and should be on the Trusted Internal network, protected from both internet access and the DMZ. Placing it in the DMZ would expose it to the same network segment as internet-reachable servers — if any DMZ host were compromised, the payroll server could be targeted. The Management Network is reserved for infrastructure management, not application servers.'},
+  {id:'q3',device:'Bastion Host (SSH Jump Server)',desc:'Used by remote administrators who SSH in from home networks to gain access to manage internal servers. Accepts inbound SSH (TCP/22) from approved external IP ranges via firewall rules.',answer:'DMZ',explanation:'A bastion host must accept inbound SSH from the internet (approved IPs), which requires it to be in the DMZ — the only zone that permits controlled inbound internet access. Placing it in Trusted Internal would require punching inbound internet rules into the interior firewall, violating the trust boundary. Placing it in the Management Network directly exposes that isolated segment to internet-sourced connections — correct practice is: internet → bastion in DMZ → hop to Management Network via a separate, tightly restricted rule.'},
+  {id:'q4',device:'Network Management Station (NMS)',desc:'Polls all switches, routers, and firewalls via SNMP v3 and SSH. Has read/write access to every infrastructure device\'s management plane. Administrators log into the NMS console locally.',answer:'Management Network',explanation:'The NMS has privileged management-plane access to every infrastructure device. If the NMS were placed on the Trusted Internal segment, a compromised employee workstation could pivot to the NMS and reconfigure any switch or firewall. The Management / Out-of-Band network is specifically designed to isolate management-plane traffic from user traffic — it has no internet access and is only reachable by authorized admin consoles, making it the only safe placement for the NMS.'},
+  {id:'q5',device:'External Authoritative DNS Server',desc:'Answers DNS queries from the internet for the company\'s public domain (e.g., solaris-financial.com). Must accept inbound UDP/53 from any external resolver.',answer:'DMZ',explanation:'The authoritative DNS server for the company\'s public domain must respond to DNS queries from arbitrary internet resolvers — it needs inbound UDP/53 from the internet. This mandates placement in the DMZ. The internal (recursive) DNS resolver used by employees is a separate device on the Trusted Internal segment. Placing the authoritative DNS server on Trusted Internal would require exposing that segment directly to internet DNS traffic, violating the segmentation model.'},
+  {id:'q6',device:'Corporate File Server (SMB Share)',desc:'Hosts shared drives accessed by all employees via SMB (TCP/445). Contains sensitive business documents. No external access is required or permitted.',answer:'Trusted Internal',explanation:'The file server has no internet-facing role and must only be accessible to internal employees. Trusted Internal is the correct zone: employees access it over SMB, firewall rules block any DMZ or internet access, and the server does not require any management-plane connectivity that would justify placing it on the Management Network.'},
+  {id:'q7',device:'Out-of-Band (OOB) Management Switch',desc:'A dedicated switch that carries only management traffic (IPMI, iDRAC, iLO). All server BMCs (baseboard management controllers) connect to it. No production traffic traverses it.',answer:'Management Network',explanation:'The OOB management switch is the physical backbone of the Management Network itself. All BMC/IPMI interfaces (which provide console-level hardware access to every server) connect through it. Placing it anywhere other than the Management Network segment would defeat the purpose of OOB isolation — production traffic would share the same switch, and a compromised production host could access hardware management interfaces of every server in the data center.'},
+];
+let submitted=false;
+function buildUI(){const container=document.getElementById('qRows');container.innerHTML='';QUESTIONS.forEach((q,i)=>{const row=document.createElement('div');row.className='q-row';row.id='row-'+q.id;row.innerHTML=`<div class="q-row-num">${i+1}</div><div class="q-row-body"><div class="device-name">${q.device}</div><div class="device-desc">${q.desc}</div><select id="sel-${q.id}" data-answer="${q.answer}">${ZONES_OPT.map(o=>`<option value="${o.value}">${o.label}</option>`).join('')}</select><div class="q-row-result" id="res-${q.id}"></div></div>`;container.appendChild(row);document.getElementById('sel-'+q.id).addEventListener('change',updateSubmit);});}
+function updateSubmit(){const allSet=QUESTIONS.every(q=>document.getElementById('sel-'+q.id).value!=='');document.getElementById('btnSubmit').disabled=!allSet||submitted;}
+document.getElementById('btnSubmit').addEventListener('click',()=>{if(submitted)return;submitted=true;document.getElementById('btnSubmit').disabled=true;let correct=0;QUESTIONS.forEach(q=>{const sel=document.getElementById('sel-'+q.id);const ok=sel.value===q.answer;if(ok)correct++;sel.disabled=true;sel.classList.add(ok?'correct':'wrong');const res=document.getElementById('res-'+q.id);res.className='q-row-result '+(ok?'correct':'wrong');res.textContent=ok?'✅ Correct':`❌ Incorrect — correct zone: ${q.answer}`;});const total=QUESTIONS.length,pct=Math.round(correct/total*100);const badge=document.getElementById('scoreBadge');badge.style.display='flex';badge.innerHTML=`<span style="font-size:18px">${pct>=70?'✅':'❌'}</span><span>${correct}/${total} correct (${pct}%)</span><span style="color:var(--muted);font-weight:400;font-size:12px">${pct>=70?' — PASS':' — BELOW PASSING'}</span>`;const expPanel=document.getElementById('explanation');expPanel.style.display='block';const tip=document.getElementById('expTip');QUESTIONS.forEach((q,i)=>{const sel=document.getElementById('sel-'+q.id);const ok=sel.value===q.answer;const row=document.createElement('div');row.className='exp-row';row.innerHTML=`<span class="exp-icon">${ok?'✅':'❌'}</span><div class="exp-content"><div class="exp-label">${i+1}. ${q.device}</div><div class="exp-answer">Correct zone: ${q.answer}</div><div class="exp-text">${q.explanation}</div></div>`;expPanel.insertBefore(row,tip);});tip.innerHTML=`<strong>Exam Tip:</strong> The two most commonly misplaced devices on Security+ are the <em>bastion host</em> (students put it in the Management Network, but it must be in the DMZ because it accepts inbound internet traffic) and the <em>NMS / management station</em> (students put it on Trusted Internal, but its write access to all infrastructure devices makes it a high-value target that must be isolated in the Management / OOB network). Zero-trust architecture eliminates implicit zone trust entirely — every access request is authenticated and authorized regardless of network location, making segmentation a defense-in-depth layer rather than the primary control.`;expPanel.scrollIntoView({behavior:'smooth',block:'start'});});
+document.getElementById('btnReset').addEventListener('click',()=>{submitted=false;document.querySelectorAll('.exp-row').forEach(r=>r.remove());document.getElementById('expTip').innerHTML='';document.getElementById('explanation').style.display='none';document.getElementById('scoreBadge').style.display='none';buildUI();updateSubmit();});
+buildUI();updateSubmit();
+</script>
+</body>
+</html>

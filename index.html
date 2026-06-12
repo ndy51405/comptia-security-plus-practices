@@ -45,15 +45,14 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .tag-domain{background:#1a2d4a;color:var(--blue-lt);border:1px solid #1f3d6b;}
 .tag-type{background:#1e1a2e;color:#b695f8;border:1px solid #3d2d6b;}
 .tag-diff{border:1px solid var(--border);color:var(--muted);}
+.tag-diff.easy{background:#0d1f0d;color:#3fb950;border-color:#196c2e;}
 .tag-diff.med{background:#1e1a0e;color:var(--yellow);border-color:#4a3800;}
 .tag-diff.hard{background:#1e0d0d;color:var(--red);border-color:#4a1000;}
 
 .q-arrow{color:var(--border);font-size:20px;flex-shrink:0;transition:color .15s;}
 .q-card:hover .q-arrow{color:var(--blue-lt);}
 
-.coming-soon{
-  opacity:.45;pointer-events:none;
-}
+.coming-soon{opacity:.45;pointer-events:none;}
 .coming-soon .q-num{color:var(--muted);}
 
 .footer{max-width:780px;margin:48px auto 0;text-align:center;font-size:12px;color:var(--muted);line-height:1.8;}
@@ -73,8 +72,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   <div class="domain-label">Domain 1 — General Security Concepts</div>
   <div class="cards">
 
-    <a class="q-card" href="q4-crypto-algorithm-matching.html">
-      <div class="q-num">Q4</div>
+    <a class="q-card" href="d1q1-crypto-algorithm-matching.html">
+      <div class="q-num">Q1</div>
       <div class="q-info">
         <div class="q-title">Cryptographic Algorithm Use-Case Matching</div>
         <div class="q-desc">Drag six algorithm labels (AES-256, RSA-2048, SHA-256, ECDSA, HMAC-SHA256, bcrypt) onto the security requirement each one is designed to fulfill.</div>
@@ -87,8 +86,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       <div class="q-arrow">›</div>
     </a>
 
-    <a class="q-card" href="q5-pki-cert-validation.html">
-      <div class="q-num">Q5</div>
+    <a class="q-card" href="d1q2-pki-cert-validation.html">
+      <div class="q-num">Q2</div>
       <div class="q-info">
         <div class="q-title">PKI Certificate Validation — Step Ordering</div>
         <div class="q-desc">Drag six X.509 validation steps into the correct sequence a TLS client must follow, from receiving the server certificate to confirming the hostname.</div>
@@ -101,11 +100,11 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       <div class="q-arrow">›</div>
     </a>
 
-    <a class="q-card" href="q6-crypto-algorithm-selection.html">
-      <div class="q-num">Q6</div>
+    <a class="q-card" href="d1q3-crypto-algorithm-selection.html">
+      <div class="q-num">Q3</div>
       <div class="q-info">
         <div class="q-title">Cryptographic Algorithm Selection Under Constraints</div>
-        <div class="q-desc">Choose the correct algorithm or mode for five enterprise components, each with binding constraints: FIPS 140-2 compliance, Perfect Forward Secrecy, AEAD, security-strength matching, and IoT key-size limits.</div>
+        <div class="q-desc">Choose the correct algorithm or mode for five enterprise components, each with binding constraints: FIPS 140-2, Perfect Forward Secrecy, AEAD, security-strength matching, and IoT key-size limits.</div>
         <div class="q-tags">
           <span class="tag tag-domain">Domain 1</span>
           <span class="tag tag-type">Dropdown</span>
@@ -115,17 +114,105 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       <div class="q-arrow">›</div>
     </a>
 
-    <div class="q-card coming-soon">
-      <div class="q-num" style="font-size:22px;">＋</div>
+  </div>
+</div>
+
+<!-- Domain 2 -->
+<div class="domain-section">
+  <div class="domain-label">Domain 2 — Threats, Vulnerabilities, and Mitigations</div>
+  <div class="cards">
+
+    <a class="q-card" href="d2q1-social-engineering-matching.html">
+      <div class="q-num">Q1</div>
       <div class="q-info">
-        <div class="q-title" style="color:var(--muted);">More questions coming soon…</div>
-        <div class="q-desc">MFA factor classification, access control models, and more.</div>
+        <div class="q-title">Social Engineering Attack Type Matching</div>
+        <div class="q-desc">Drag six attack scenario descriptions onto the correct social engineering technique: phishing, vishing, smishing, pretexting, baiting, and whaling.</div>
         <div class="q-tags">
-          <span class="tag tag-domain">Domain 1</span>
+          <span class="tag tag-domain">Domain 2</span>
+          <span class="tag tag-type">Drag &amp; Drop</span>
+          <span class="tag tag-diff easy">Easy</span>
         </div>
       </div>
       <div class="q-arrow">›</div>
-    </div>
+    </a>
+
+    <a class="q-card" href="d2q2-vuln-mitigation-matching.html">
+      <div class="q-num">Q2</div>
+      <div class="q-info">
+        <div class="q-title">Vulnerability-to-Mitigation Matching</div>
+        <div class="q-desc">Match five web application vulnerabilities (SQLi, XSS, CSRF, SSRF, buffer overflow) to the primary mitigation control that most directly prevents exploitation.</div>
+        <div class="q-tags">
+          <span class="tag tag-domain">Domain 2</span>
+          <span class="tag tag-type">Drag &amp; Drop</span>
+          <span class="tag tag-diff med">Medium</span>
+        </div>
+      </div>
+      <div class="q-arrow">›</div>
+    </a>
+
+    <a class="q-card" href="d2q3-killchain-reorder.html">
+      <div class="q-num">Q3</div>
+      <div class="q-info">
+        <div class="q-title">Cyber Kill Chain — Attack Stage Ordering</div>
+        <div class="q-desc">Reorder seven observed attacker actions into the correct Lockheed Martin Cyber Kill Chain sequence, given a realistic APT intrusion scenario with specific observables at each stage.</div>
+        <div class="q-tags">
+          <span class="tag tag-domain">Domain 2</span>
+          <span class="tag tag-type">Drag &amp; Reorder</span>
+          <span class="tag tag-diff hard">Hard</span>
+        </div>
+      </div>
+      <div class="q-arrow">›</div>
+    </a>
+
+  </div>
+</div>
+
+<!-- Domain 3 -->
+<div class="domain-section">
+  <div class="domain-label">Domain 3 — Security Architecture</div>
+  <div class="cards">
+
+    <a class="q-card" href="d3q1-cloud-model-matching.html">
+      <div class="q-num">Q1</div>
+      <div class="q-info">
+        <div class="q-title">Cloud Service Model Matching</div>
+        <div class="q-desc">Drag six cloud deployment or service scenarios onto the correct model: IaaS, PaaS, SaaS, public cloud, private cloud, and hybrid cloud.</div>
+        <div class="q-tags">
+          <span class="tag tag-domain">Domain 3</span>
+          <span class="tag tag-type">Drag &amp; Drop</span>
+          <span class="tag tag-diff easy">Easy</span>
+        </div>
+      </div>
+      <div class="q-arrow">›</div>
+    </a>
+
+    <a class="q-card" href="d3q2-raid-selection.html">
+      <div class="q-num">Q2</div>
+      <div class="q-info">
+        <div class="q-title">RAID Level Selection</div>
+        <div class="q-desc">Use dropdown selectors to choose the correct RAID level for five storage scenarios, each with distinct requirements for redundancy, read/write performance, usable capacity, and minimum drive count.</div>
+        <div class="q-tags">
+          <span class="tag tag-domain">Domain 3</span>
+          <span class="tag tag-type">Dropdown</span>
+          <span class="tag tag-diff med">Medium</span>
+        </div>
+      </div>
+      <div class="q-arrow">›</div>
+    </a>
+
+    <a class="q-card" href="d3q3-network-zone-placement.html">
+      <div class="q-num">Q3</div>
+      <div class="q-info">
+        <div class="q-title">Network Zone Device Placement</div>
+        <div class="q-desc">Assign seven enterprise devices to the correct network security zone — Internet, DMZ, or Internal — based on each device's function, trust level, and exposure requirements.</div>
+        <div class="q-tags">
+          <span class="tag tag-domain">Domain 3</span>
+          <span class="tag tag-type">Drag &amp; Drop</span>
+          <span class="tag tag-diff hard">Hard</span>
+        </div>
+      </div>
+      <div class="q-arrow">›</div>
+    </a>
 
   </div>
 </div>
@@ -135,7 +222,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   <div class="domain-label">Domain 4 — Network Security</div>
   <div class="cards">
 
-    <a class="q-card" href="q1-port-matching.html">
+    <a class="q-card" href="d4q1-port-matching.html">
       <div class="q-num">Q1</div>
       <div class="q-info">
         <div class="q-title">Port-to-Protocol Matching</div>
@@ -149,7 +236,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       <div class="q-arrow">›</div>
     </a>
 
-    <a class="q-card" href="q2-nat-firewall.html">
+    <a class="q-card" href="d4q2-nat-firewall.html">
       <div class="q-num">Q2</div>
       <div class="q-info">
         <div class="q-title">NAPT Firewall — Socket Translation</div>
@@ -163,7 +250,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       <div class="q-arrow">›</div>
     </a>
 
-    <a class="q-card" href="q3-firewall-acl.html">
+    <a class="q-card" href="d4q3-firewall-acl.html">
       <div class="q-num">Q3</div>
       <div class="q-info">
         <div class="q-title">Firewall ACL Rule Ordering</div>
@@ -177,17 +264,55 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       <div class="q-arrow">›</div>
     </a>
 
-    <div class="q-card coming-soon">
-      <div class="q-num" style="font-size:22px;">＋</div>
+  </div>
+</div>
+
+<!-- Domain 5 -->
+<div class="domain-section">
+  <div class="domain-label">Domain 5 — Security Program Management and Oversight</div>
+  <div class="cards">
+
+    <a class="q-card" href="d5q1-framework-matching.html">
+      <div class="q-num">Q1</div>
       <div class="q-info">
-        <div class="q-title" style="color:var(--muted);">More questions coming soon…</div>
-        <div class="q-desc">VLAN segmentation, VPN tunnel configuration, cryptography selection, and more.</div>
+        <div class="q-title">Security Framework &amp; Regulation Matching</div>
+        <div class="q-desc">Drag six compliance or framework names (NIST CSF, ISO 27001, PCI-DSS, HIPAA, GDPR, SOC 2) onto the scenario that best describes each one's primary mandate.</div>
         <div class="q-tags">
-          <span class="tag tag-domain">Domain 4</span>
+          <span class="tag tag-domain">Domain 5</span>
+          <span class="tag tag-type">Drag &amp; Drop</span>
+          <span class="tag tag-diff easy">Easy</span>
         </div>
       </div>
       <div class="q-arrow">›</div>
-    </div>
+    </a>
+
+    <a class="q-card" href="d5q2-incident-response-reorder.html">
+      <div class="q-num">Q2</div>
+      <div class="q-info">
+        <div class="q-title">Incident Response Phase Ordering</div>
+        <div class="q-desc">Reorder six analyst actions into the correct NIST SP 800-61 incident response sequence for a live ransomware incident, distinguishing subtly similar containment vs. eradication steps.</div>
+        <div class="q-tags">
+          <span class="tag tag-domain">Domain 5</span>
+          <span class="tag tag-type">Drag &amp; Reorder</span>
+          <span class="tag tag-diff med">Medium</span>
+        </div>
+      </div>
+      <div class="q-arrow">›</div>
+    </a>
+
+    <a class="q-card" href="d5q3-forensics-volatility.html">
+      <div class="q-num">Q3</div>
+      <div class="q-info">
+        <div class="q-title">Digital Forensics — Order of Volatility</div>
+        <div class="q-desc">Use dropdowns to assign the correct collection priority (1 = most volatile) to seven evidence sources on a compromised server, then identify the correct legal hold action for each.</div>
+        <div class="q-tags">
+          <span class="tag tag-domain">Domain 5</span>
+          <span class="tag tag-type">Dropdown</span>
+          <span class="tag tag-diff hard">Hard</span>
+        </div>
+      </div>
+      <div class="q-arrow">›</div>
+    </a>
 
   </div>
 </div>

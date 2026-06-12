@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>D2Q3 — Cyber Kill Chain Stage Ordering</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--blue:#1f6feb;--blue-lt:#388bfd;--purple:#8957e5;--green:#2ea043;--green-bg:#0d2318;--green-border:#196c2e;--red:#da3633;--red-bg:#1e0d0d;--red-border:#6e1a1a;--yellow:#d29922;--accent:#238636;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding:0 0 80px;}
+.top-bar{display:flex;align-items:center;gap:12px;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;flex-wrap:wrap;}
+.badge{background:var(--purple);color:#fff;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.top-title{flex:1;font-size:13px;color:var(--muted);min-width:0;}
+.back-link{font-size:13px;color:var(--blue-lt);text-decoration:none;white-space:nowrap;}
+.back-link:hover{text-decoration:underline;}
+.page{max-width:760px;margin:0 auto;padding:32px 16px;}
+.scenario-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;}
+.sc-title{font-size:18px;font-weight:700;margin-bottom:8px;}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;letter-spacing:.04em;}
+.tag-domain{background:#1a2d4a;color:var(--blue-lt);border:1px solid #1f3d6b;}
+.tag-type{background:#1e1a2e;color:#b695f8;border:1px solid #3d2d6b;}
+.tag-diff.hard{background:#1e0d0d;color:#f85149;border:1px solid #4a1000;}
+.scenario-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;font-size:14px;line-height:1.7;}
+.scenario-box strong{color:var(--blue-lt);}
+.obs-list{margin:10px 0 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px;}
+.obs-list li{font-size:13px;line-height:1.5;}
+.obs-list li span{font-family:'Courier New',monospace;color:#d2a679;font-size:12px;}
+.instructions{font-size:13px;color:var(--muted);line-height:1.6;}
+.reorder-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
+.r-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;cursor:grab;user-select:none;transition:border-color .15s,background .15s;position:relative;}
+.r-card:hover{border-color:var(--blue-lt);background:var(--surface2);}
+.r-card.dragging{opacity:.3;}
+.r-card.drag-over-top{border-top:2px solid var(--blue-lt);}
+.r-card.drag-over-bot{border-bottom:2px solid var(--blue-lt);}
+.r-handle{color:var(--muted);font-size:16px;flex-shrink:0;margin-top:2px;}
+.r-pos{width:28px;height:28px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--muted);flex-shrink:0;}
+.r-body{flex:1;}
+.r-phase{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.r-text{font-size:13px;line-height:1.5;}
+.r-badge{position:absolute;right:14px;top:14px;font-size:18px;display:none;}
+.r-card.correct{border-color:var(--green-border);background:var(--green-bg);}
+.r-card.wrong{border-color:var(--red-border);background:var(--red-bg);}
+.r-card.correct .r-pos{background:var(--green-bg);border-color:var(--green-border);color:#3fb950;}
+.r-card.wrong .r-pos{background:var(--red-bg);border-color:var(--red-border);color:#f85149;}
+.actions{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
+.btn-submit{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-submit:disabled{opacity:.4;cursor:not-allowed;}
+.btn-reset{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-reset:hover{border-color:var(--muted);color:var(--text);}
+.score-badge{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:14px;font-weight:700;}
+.explanation{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:none;}
+.exp-header{padding:14px 20px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);}
+.exp-row{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;}
+.exp-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.exp-content{flex:1;}
+.exp-step{font-weight:700;font-size:13px;color:var(--blue-lt);margin-bottom:4px;}
+.exp-text{font-size:13px;color:var(--muted);line-height:1.6;}
+.exp-tip{margin:0 20px 20px;padding:14px 16px;background:#1a1f2e;border:1px solid #2a3a6e;border-radius:8px;font-size:13px;color:#a0b4e8;line-height:1.6;}
+.exp-tip strong{color:var(--blue-lt);}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <span class="badge">Performance-Based</span>
+  <span class="top-title">CompTIA Security+ SY0-701 · Domain 2: Threats, Vulnerabilities &amp; Mitigations · Kill Chain</span>
+  <a class="back-link" href="index.html">← All Questions</a>
+</div>
+<div class="page">
+  <div class="scenario-card">
+    <div class="sc-title">Cyber Kill Chain — Attack Stage Ordering</div>
+    <div class="tags">
+      <span class="tag tag-domain">Domain 2</span>
+      <span class="tag tag-type">Drag &amp; Reorder</span>
+      <span class="tag tag-diff hard">Hard</span>
+    </div>
+    <div class="scenario-box">
+      A threat intelligence analyst at <strong>Pinnacle Energy Corp</strong> is reviewing SIEM alerts
+      and endpoint telemetry from an APT intrusion detected last week. The analyst has extracted
+      seven discrete observables from logs and has been asked to map them to the Lockheed Martin
+      Cyber Kill Chain and arrange them in the correct chronological attack sequence.<br><br>
+      <strong>Observables extracted from logs and forensic images:</strong>
+      <ul class="obs-list">
+        <li><span>[A]</span> Shodan scan hits on TCP/8080 (mgmt console) and LinkedIn enumeration of six IT staff names found in threat actor's browsing history.</li>
+        <li><span>[B]</span> Beacon traffic every 60 s to <code>update.cdn-delivery[.]net:443</code>; TLS cert issued 3 days prior to intrusion.</li>
+        <li><span>[C]</span> Macro-enabled Word document crafted with CVE-2022-30190 (Follina) MSDT exploit embedded in <code>template.dotm</code>.</li>
+        <li><span>[D]</span> Scheduled task <code>MicrosoftEdgeSync</code> created in <code>HKCU\Software\Microsoft\Windows\CurrentVersion\Run</code> for persistence.</li>
+        <li><span>[E]</span> Spear-phishing email sent to <code>j.harris@pinnacleenergy.com</code> with attachment <code>Q3_Budget_Review.docx</code>.</li>
+        <li><span>[F]</span> <code>msdt.exe</code> spawns <code>cmd.exe</code>, which runs an encoded PowerShell stager downloading a 42 KB dropper.</li>
+        <li><span>[G]</span> PsExec lateral movement to finance file server; 14 GB archive exfiltrated to attacker-controlled S3 bucket.</li>
+      </ul>
+    </div>
+    <div class="instructions">Drag the observable cards to arrange them in the correct Cyber Kill Chain order (Stage 1 at top, Stage 7 at bottom).</div>
+  </div>
+  <div class="reorder-list" id="reorderList"></div>
+  <div class="actions">
+    <button class="btn-submit" id="btnSubmit">Submit Answer</button>
+    <button class="btn-reset" id="btnReset">Reset</button>
+    <span class="score-badge" id="scoreBadge" style="display:none;"></span>
+  </div>
+  <div class="explanation" id="explanation">
+    <div class="exp-header">Answer Explanations</div>
+    <div class="exp-tip" id="expTip"></div>
+  </div>
+</div>
+<script>
+const STEPS=[
+  {id:'s1',phase:'Stage 1 — Reconnaissance',text:'[A] Shodan scan on TCP/8080 and LinkedIn enumeration of IT staff names.',explanation:'Reconnaissance is the first stage: the attacker gathers information about the target — exposed services (Shodan), employee names and roles (LinkedIn OSINT) — before building any weapon. No malicious action has touched the target yet.'},
+  {id:'s2',phase:'Stage 2 — Weaponization',text:'[C] Macro-enabled Word document crafted with CVE-2022-30190 (Follina) exploit embedded in template.dotm.',explanation:'Weaponization happens entirely off-target: the attacker combines an exploit (Follina/MSDT) with a carrier document to create a deliverable weapon. The victim\'s environment has still not been touched.'},
+  {id:'s3',phase:'Stage 3 — Delivery',text:'[E] Spear-phishing email sent to j.harris@pinnacleenergy.com with attachment Q3_Budget_Review.docx.',explanation:'Delivery is the transmission of the weaponized payload to the target. The spear-phishing email is the delivery mechanism — it carries the Follina document crafted in Stage 2 to the victim\'s inbox.'},
+  {id:'s4',phase:'Stage 4 — Exploitation',text:'[F] msdt.exe spawns cmd.exe, which runs an encoded PowerShell stager downloading the dropper.',explanation:'Exploitation is when the vulnerability is triggered on the victim\'s system. Opening the document causes msdt.exe to execute attacker-controlled code via CVE-2022-30190 — this is the moment code first runs on the target machine.'},
+  {id:'s5',phase:'Stage 5 — Installation',text:'[D] Scheduled task MicrosoftEdgeSync created in HKCU Run key for persistence.',explanation:'Installation establishes a persistent foothold. The dropper creates a Run key entry to survive reboots. This stage is about making the implant permanent — it is distinct from exploitation (gaining initial code execution).'},
+  {id:'s6',phase:'Stage 6 — Command & Control',text:'[B] Beacon traffic every 60 s to update.cdn-delivery[.]net:443; TLS cert issued 3 days prior.',explanation:'C2 is when the implant establishes an outbound channel to the attacker\'s infrastructure. The periodic HTTPS beacon (TLS to a domain registered just before the attack) is the classic C2 indicator — the attacker can now issue commands interactively.'},
+  {id:'s7',phase:'Stage 7 — Actions on Objectives',text:'[G] PsExec lateral movement to finance file server; 14 GB archive exfiltrated to S3.',explanation:'Actions on Objectives is the final stage: the attacker achieves their goal. Having established persistence and a C2 channel, they laterally move to a high-value file server and exfiltrate the target data. This is what the entire chain was built toward.'},
+];
+const CORRECT_ORDER=STEPS.map(s=>s.id);
+let order=[],dragSrcIdx=null,submitted=false;
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function init(){submitted=false;do{order=shuffle(CORRECT_ORDER);}while(order.join()===CORRECT_ORDER.join());document.getElementById('scoreBadge').style.display='none';document.getElementById('explanation').style.display='none';document.querySelectorAll('.exp-row').forEach(r=>r.remove());document.getElementById('expTip').innerHTML='';document.getElementById('btnSubmit').disabled=false;render();}
+function render(){const list=document.getElementById('reorderList');list.innerHTML='';order.forEach((id,idx)=>{const step=STEPS.find(s=>s.id===id);const card=document.createElement('div');card.className='r-card';card.draggable=!submitted;card.dataset.idx=idx;card.innerHTML=`<span class="r-handle">⠿</span><div class="r-pos">${idx+1}</div><div class="r-body"><div class="r-phase">${step.phase}</div><div class="r-text">${step.text}</div></div><span class="r-badge" id="badge-${idx}"></span>`;
+if(!submitted){card.addEventListener('dragstart',()=>{dragSrcIdx=idx;setTimeout(()=>card.classList.add('dragging'),0);});card.addEventListener('dragend',()=>{card.classList.remove('dragging');dragSrcIdx=null;document.querySelectorAll('.r-card').forEach(c=>c.classList.remove('drag-over-top','drag-over-bot'));});card.addEventListener('dragover',e=>{e.preventDefault();card.classList.remove('drag-over-top','drag-over-bot');const rect=card.getBoundingClientRect();card.classList.add(e.clientY<rect.top+rect.height/2?'drag-over-top':'drag-over-bot');});card.addEventListener('dragleave',()=>card.classList.remove('drag-over-top','drag-over-bot'));card.addEventListener('drop',e=>{e.preventDefault();card.classList.remove('drag-over-top','drag-over-bot');if(dragSrcIdx===null||dragSrcIdx===idx)return;const rect=card.getBoundingClientRect();const before=e.clientY<rect.top+rect.height/2;const[moved]=order.splice(dragSrcIdx,1);let t=order.indexOf(id);if(!before)t+=1;order.splice(t,0,moved);dragSrcIdx=null;render();});}
+card.addEventListener('touchstart',onTouchStart,{passive:false});list.appendChild(card);});}
+document.getElementById('btnSubmit').addEventListener('click',()=>{if(submitted)return;submitted=true;document.getElementById('btnSubmit').disabled=true;let correct=0;order.forEach((id,idx)=>{const ok=id===CORRECT_ORDER[idx];if(ok)correct++;const card=document.querySelector(`.r-card[data-idx="${idx}"]`);card.classList.add(ok?'correct':'wrong');card.draggable=false;const b=card.querySelector('.r-badge');b.textContent=ok?'✅':'❌';b.style.display='block';});const total=STEPS.length,pct=Math.round(correct/total*100);const badge=document.getElementById('scoreBadge');badge.style.display='flex';badge.innerHTML=`<span style="font-size:18px">${pct>=70?'✅':'❌'}</span><span>${correct}/${total} correct (${pct}%)</span><span style="color:var(--muted);font-weight:400;font-size:12px">${pct>=70?' — PASS':' — BELOW PASSING'}</span>`;const expPanel=document.getElementById('explanation');expPanel.style.display='block';const tip=document.getElementById('expTip');STEPS.forEach((step,ci)=>{const ui=order.indexOf(step.id);const ok=ui===ci;const row=document.createElement('div');row.className='exp-row';row.innerHTML=`<span class="exp-icon">${ok?'✅':'❌'}</span><div class="exp-content"><div class="exp-step">${step.phase}${!ok?` <span style="color:var(--muted);font-weight:400;font-size:12px;">(you placed at position ${ui+1})</span>`:''}</div><div class="exp-text">${step.explanation}</div></div>`;expPanel.insertBefore(row,tip);});tip.innerHTML=`<strong>Exam Tip:</strong> Security+ may present the Lockheed Martin Kill Chain alongside the MITRE ATT&amp;CK framework — know that ATT&amp;CK is more granular (Tactics &gt; Techniques &gt; Sub-techniques) while the Kill Chain gives a high-level linear view. The most commonly confused stages are <em>Weaponization vs. Exploitation</em> (weaponization is off-target prep; exploitation is on-target code execution) and <em>Installation vs. C2</em> (installation establishes persistence on disk; C2 establishes a live communication channel). Exfiltration is always "Actions on Objectives," the last stage.`;expPanel.scrollIntoView({behavior:'smooth',block:'start'});});
+document.getElementById('btnReset').addEventListener('click',init);
+let touchClone=null,touchSrcIdx=null,touchOffX=0,touchOffY=0;
+function onTouchStart(e){if(submitted)return;e.preventDefault();const card=e.currentTarget;touchSrcIdx=parseInt(card.dataset.idx);const touch=e.touches[0];const rect=card.getBoundingClientRect();touchOffX=touch.clientX-rect.left;touchOffY=touch.clientY-rect.top;touchClone=card.cloneNode(true);touchClone.style.cssText=`position:fixed;top:${rect.top}px;left:${rect.left}px;width:${rect.width}px;pointer-events:none;z-index:9999;opacity:.85;border-radius:10px;`;document.body.appendChild(touchClone);document.addEventListener('touchmove',onTouchMove,{passive:false});document.addEventListener('touchend',onTouchEnd);}
+function onTouchMove(e){e.preventDefault();const touch=e.touches[0];touchClone.style.top=(touch.clientY-touchOffY)+'px';touchClone.style.left=(touch.clientX-touchOffX)+'px';document.querySelectorAll('.r-card').forEach(c=>c.classList.remove('drag-over-top','drag-over-bot'));const el=document.elementFromPoint(touch.clientX,touch.clientY);const target=el&&el.closest('.r-card');if(target){const rect=target.getBoundingClientRect();target.classList.add(touch.clientY<rect.top+rect.height/2?'drag-over-top':'drag-over-bot');}}
+function onTouchEnd(e){document.removeEventListener('touchmove',onTouchMove);document.removeEventListener('touchend',onTouchEnd);if(touchClone){touchClone.remove();touchClone=null;}document.querySelectorAll('.r-card').forEach(c=>c.classList.remove('drag-over-top','drag-over-bot'));const touch=e.changedTouches[0];const el=document.elementFromPoint(touch.clientX,touch.clientY);const targetCard=el&&el.closest('.r-card');if(targetCard&&touchSrcIdx!==null){const ti=parseInt(targetCard.dataset.idx);if(ti!==touchSrcIdx){const rect=targetCard.getBoundingClientRect();const before=touch.clientY<rect.top+rect.height/2;const[moved]=order.splice(touchSrcIdx,1);const newIdx=order.indexOf(order[before?(touchSrcIdx<ti?ti-1:ti):(touchSrcIdx<ti?ti-1:ti)]);let ins=before?(touchSrcIdx<ti?ti-1:ti):(touchSrcIdx<ti?ti:ti+1);order.splice(ins,0,moved);}}touchSrcIdx=null;render();}
+init();
+</script>
+</body>
+</html>
