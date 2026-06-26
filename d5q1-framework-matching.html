@@ -9,50 +9,50 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding:0 0 80px;}
 .top-bar{display:flex;align-items:center;gap:12px;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;flex-wrap:wrap;}
-.badge{background:var(--purple);color:#fff;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;}
-.top-title{flex:1;font-size:13px;color:var(--muted);min-width:0;}
-.back-link{font-size:13px;color:var(--blue-lt);text-decoration:none;white-space:nowrap;}
+.badge{background:var(--purple);color:#fff;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.top-title{flex:1;font-size:14px;color:var(--muted);min-width:0;}
+.back-link{font-size:14px;color:var(--blue-lt);text-decoration:none;white-space:nowrap;}
 .back-link:hover{text-decoration:underline;}
 .page{max-width:960px;margin:0 auto;padding:32px 16px;}
 .scenario-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;}
 .sc-title{font-size:18px;font-weight:700;margin-bottom:8px;}
 .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
-.tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;letter-spacing:.04em;}
+.tag{font-size:12px;font-weight:600;padding:2px 8px;border-radius:12px;letter-spacing:.04em;}
 .tag-domain{background:#1a2d4a;color:var(--blue-lt);border:1px solid #1f3d6b;}
 .tag-type{background:#1e1a2e;color:#b695f8;border:1px solid #3d2d6b;}
 .tag-diff.easy{background:#0d1f0d;color:#3fb950;border:1px solid #196c2e;}
-.scenario-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;font-size:14px;line-height:1.7;}
+.scenario-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;font-size:15px;line-height:1.7;}
 .scenario-box strong{color:var(--blue-lt);}
-.instructions{font-size:13px;color:var(--muted);line-height:1.6;}
+.instructions{font-size:14px;color:var(--muted);line-height:1.6;}
 .match-area{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
 @media(max-width:640px){.match-area{grid-template-columns:1fr;}}
-.col-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.col-label{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
 .chip-pool{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;min-height:340px;}
-.chip{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;font-weight:700;color:var(--blue-lt);cursor:grab;user-select:none;transition:border-color .15s,opacity .15s;}
+.chip{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:14px;font-weight:700;color:var(--blue-lt);cursor:grab;user-select:none;transition:border-color .15s,opacity .15s;}
 .chip:hover{border-color:var(--blue-lt);}
 .chip.dragging{opacity:.4;}
 .chip.placed{opacity:.25;pointer-events:none;}
 .drop-zones{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;}
-.zone{background:var(--surface2);border:2px dashed var(--border);border-radius:8px;padding:10px 14px;min-height:60px;display:flex;align-items:center;font-size:13px;line-height:1.4;color:var(--text);transition:border-color .15s,background .15s;}
+.zone{background:var(--surface2);border:2px dashed var(--border);border-radius:8px;padding:10px 14px;min-height:60px;display:flex;align-items:center;font-size:14px;line-height:1.4;color:var(--text);transition:border-color .15s,background .15s;}
 .zone.drag-over{border-color:var(--blue-lt);background:#1a2540;}
 .zone-label{flex:1;padding-right:8px;}
-.zone-chip{background:var(--blue);color:#fff;border-radius:6px;padding:4px 10px;font-size:12px;font-weight:700;white-space:nowrap;cursor:grab;flex-shrink:0;}
+.zone-chip{background:var(--blue);color:#fff;border-radius:6px;padding:4px 10px;font-size:13px;font-weight:700;white-space:nowrap;cursor:grab;flex-shrink:0;}
 .zone.correct{border-color:var(--green-border);background:var(--green-bg);border-style:solid;}
 .zone.wrong{border-color:var(--red-border);background:var(--red-bg);border-style:solid;}
 .actions{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
-.btn-submit{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-submit{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:15px;font-weight:600;cursor:pointer;}
 .btn-submit:disabled{opacity:.4;cursor:not-allowed;}
-.btn-reset{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-reset{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px 20px;font-size:15px;font-weight:600;cursor:pointer;}
 .btn-reset:hover{border-color:var(--muted);color:var(--text);}
-.score-badge{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:14px;font-weight:700;}
+.score-badge{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:15px;font-weight:700;}
 .explanation{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:none;}
-.exp-header{padding:14px 20px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);}
+.exp-header{padding:14px 20px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:14px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);}
 .exp-row{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;}
-.exp-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.exp-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
 .exp-content{flex:1;}
-.exp-alg{font-weight:700;font-size:13px;color:var(--blue-lt);margin-bottom:4px;}
-.exp-text{font-size:13px;color:var(--muted);line-height:1.6;}
-.exp-tip{margin:0 20px 20px;padding:14px 16px;background:#1a1f2e;border:1px solid #2a3a6e;border-radius:8px;font-size:13px;color:#a0b4e8;line-height:1.6;}
+.exp-alg{font-weight:700;font-size:14px;color:var(--blue-lt);margin-bottom:4px;}
+.exp-text{font-size:14px;color:var(--muted);line-height:1.6;}
+.exp-tip{margin:0 20px 20px;padding:14px 16px;background:#1a1f2e;border:1px solid #2a3a6e;border-radius:8px;font-size:14px;color:#a0b4e8;line-height:1.6;}
 .exp-tip strong{color:var(--blue-lt);}
 </style>
 </head>
@@ -121,7 +121,7 @@ function renderZones(){const container=document.getElementById('dropZones');cont
 if(!submitted){div.addEventListener('dragover',e=>{e.preventDefault();div.classList.add('drag-over');});div.addEventListener('dragleave',()=>div.classList.remove('drag-over'));div.addEventListener('drop',e=>{e.preventDefault();div.classList.remove('drag-over');if(!draggedId)return;Object.keys(chipSlot).forEach(zid=>{if(chipSlot[zid]===draggedId)chipSlot[zid]=null;});chipSlot[zone.id]=draggedId;draggedId=null;renderChips();renderZones();updateSubmit();});}
 container.appendChild(div);});}
 function updateSubmit(){document.getElementById('btnSubmit').disabled=(Object.values(chipSlot).filter(Boolean).length<ZONES.length)||submitted;}
-document.getElementById('btnSubmit').addEventListener('click',()=>{if(submitted)return;submitted=true;document.getElementById('btnSubmit').disabled=true;let correct=0;document.querySelectorAll('.zone').forEach(zoneEl=>{const zid=zoneEl.dataset.zoneId;const ok=chipSlot[zid]===correctMap[zid];if(ok)correct++;zoneEl.classList.add(ok?'correct':'wrong');});const total=ZONES.length,pct=Math.round(correct/total*100);const badge=document.getElementById('scoreBadge');badge.style.display='flex';badge.innerHTML=`<span style="font-size:18px">${pct>=70?'✅':'❌'}</span><span>${correct}/${total} correct (${pct}%)</span><span style="color:var(--muted);font-weight:400;font-size:12px">${pct>=70?' — PASS':' — BELOW PASSING'}</span>`;const expPanel=document.getElementById('explanation');expPanel.style.display='block';const tip=document.getElementById('expTip');zoneOrder.forEach(zone=>{const placedId=chipSlot[zone.id];const correctId=correctMap[zone.id];const correctItem=ITEMS.find(i=>i.id===correctId);const placedItem=ITEMS.find(i=>i.id===placedId);const ok=placedId===correctId;const row=document.createElement('div');row.className='exp-row';row.innerHTML=`<span class="exp-icon">${ok?'✅':'❌'}</span><div class="exp-content"><div class="exp-alg">${correctItem.label}${!ok?` <span style="color:var(--muted);font-weight:400;font-size:12px;">(you chose: ${placedItem?placedItem.label:'nothing'})</span>`:''}</div><div class="exp-text">${correctItem.explanation}</div></div>`;expPanel.insertBefore(row,tip);});tip.innerHTML=`<strong>Exam Tip:</strong> Know these key distinctions: <em>NIST CSF</em> is voluntary and U.S.-focused (though globally adopted); <em>ISO 27001</em> is the only one of these six that results in a formal third-party <em>certification</em>; <em>PCI-DSS</em> is the only one driven by the payment card industry rather than government; <em>HIPAA</em> is U.S. law covering health data; <em>GDPR</em> is EU law covering <em>all</em> personal data of EU residents (not just health); <em>SOC 2</em> is an <em>audit report</em> (not a certification) covering service-organization controls. The exam also references SOC 2 Type I (design of controls at a point in time) vs. Type II (operational effectiveness over a period).`;expPanel.scrollIntoView({behavior:'smooth',block:'start'});});
+document.getElementById('btnSubmit').addEventListener('click',()=>{if(submitted)return;submitted=true;document.getElementById('btnSubmit').disabled=true;let correct=0;document.querySelectorAll('.zone').forEach(zoneEl=>{const zid=zoneEl.dataset.zoneId;const ok=chipSlot[zid]===correctMap[zid];if(ok)correct++;zoneEl.classList.add(ok?'correct':'wrong');});const total=ZONES.length,pct=Math.round(correct/total*100);const badge=document.getElementById('scoreBadge');badge.style.display='flex';badge.innerHTML=`<span style="font-size:18px">${pct>=70?'✅':'❌'}</span><span>${correct}/${total} correct (${pct}%)</span><span style="color:var(--muted);font-weight:400;font-size:13px">${pct>=70?' — PASS':' — BELOW PASSING'}</span>`;const expPanel=document.getElementById('explanation');expPanel.style.display='block';const tip=document.getElementById('expTip');zoneOrder.forEach(zone=>{const placedId=chipSlot[zone.id];const correctId=correctMap[zone.id];const correctItem=ITEMS.find(i=>i.id===correctId);const placedItem=ITEMS.find(i=>i.id===placedId);const ok=placedId===correctId;const row=document.createElement('div');row.className='exp-row';row.innerHTML=`<span class="exp-icon">${ok?'✅':'❌'}</span><div class="exp-content"><div class="exp-alg">${correctItem.label}${!ok?` <span style="color:var(--muted);font-weight:400;font-size:13px;">(you chose: ${placedItem?placedItem.label:'nothing'})</span>`:''}</div><div class="exp-text">${correctItem.explanation}</div></div>`;expPanel.insertBefore(row,tip);});tip.innerHTML=`<strong>Exam Tip:</strong> Know these key distinctions: <em>NIST CSF</em> is voluntary and U.S.-focused (though globally adopted); <em>ISO 27001</em> is the only one of these six that results in a formal third-party <em>certification</em>; <em>PCI-DSS</em> is the only one driven by the payment card industry rather than government; <em>HIPAA</em> is U.S. law covering health data; <em>GDPR</em> is EU law covering <em>all</em> personal data of EU residents (not just health); <em>SOC 2</em> is an <em>audit report</em> (not a certification) covering service-organization controls. The exam also references SOC 2 Type I (design of controls at a point in time) vs. Type II (operational effectiveness over a period).`;expPanel.scrollIntoView({behavior:'smooth',block:'start'});});
 document.getElementById('btnReset').addEventListener('click',()=>{document.querySelectorAll('.exp-row').forEach(r=>r.remove());document.getElementById('expTip').innerHTML='';init();});
 let touchClone=null,touchItemId=null,touchOffsetX=0,touchOffsetY=0;
 function onTouchStart(e){if(submitted)return;e.preventDefault();const touch=e.touches[0];const src=e.currentTarget;touchItemId=src.dataset.itemId;Object.keys(chipSlot).forEach(zid=>{if(chipSlot[zid]===touchItemId)chipSlot[zid]=null;});renderChips();renderZones();updateSubmit();const rect=src.getBoundingClientRect();touchOffsetX=touch.clientX-rect.left;touchOffsetY=touch.clientY-rect.top;touchClone=src.cloneNode(true);touchClone.style.cssText=`position:fixed;top:${rect.top}px;left:${rect.left}px;width:${rect.width}px;pointer-events:none;z-index:9999;opacity:.85;`;document.body.appendChild(touchClone);document.addEventListener('touchmove',onTouchMove,{passive:false});document.addEventListener('touchend',onTouchEnd);}

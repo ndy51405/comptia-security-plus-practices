@@ -8,93 +8,83 @@
 :root{
   --bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;
   --text:#e6edf3;--muted:#8b949e;--blue:#1f6feb;--blue-lt:#388bfd;
-  --purple:#8957e5;--green:#2ea043;--green-bg:#196c2e;--red:#da3633;--red-bg:#6e1a1a;
+  --purple:#8957e5;--green:#2ea043;--green-bg:#0d2318;--green-border:#196c2e;
+  --red:#da3633;--red-bg:#1e0d0d;--red-border:#6e1a1a;
   --yellow:#d29922;--accent:#238636;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding:20px 12px 60px;}
 
-/* ── header ── */
-.top-bar{max-width:980px;margin:0 auto 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.badge{background:var(--purple);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;padding:3px 10px;border-radius:20px;text-transform:uppercase;}
-.top-title{font-size:13px;color:var(--muted);}
-.back-link{margin-left:auto;font-size:12px;color:var(--blue-lt);text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;}
+/* ── top bar ── */
+.top-bar{max-width:960px;margin:0 auto 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.badge{background:var(--purple);color:#fff;font-size:12px;font-weight:700;letter-spacing:.08em;padding:3px 10px;border-radius:20px;text-transform:uppercase;}
+.top-title{font-size:14px;color:var(--muted);}
+.back-link{margin-left:auto;font-size:13px;color:var(--blue-lt);text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;}
 .back-link:hover{border-color:var(--blue-lt);}
 
 /* ── scenario card ── */
-.scenario-card{max-width:980px;margin:0 auto 16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px 26px;}
-.q-label{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--blue-lt);text-transform:uppercase;margin-bottom:8px;}
-.q-text{font-size:15px;line-height:1.7;margin-bottom:6px;}
-.q-sub{font-size:13px;color:var(--muted);line-height:1.6;}
+.card{max-width:960px;margin:0 auto 16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px 26px;}
+.q-label{font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--blue-lt);text-transform:uppercase;margin-bottom:8px;}
+.q-text{font-size:16px;line-height:1.7;margin-bottom:6px;}
+.q-sub{font-size:14px;color:var(--muted);line-height:1.6;}
 .q-sub strong{color:var(--text);}
+.hr{border:none;border-top:1px solid var(--border);margin:14px 0;}
 
-/* ── diagram wrapper ── */
-.diagram-wrap{max-width:980px;margin:0 auto 16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px 20px 24px;overflow-x:auto;}
+/* ── topology diagram ── */
+.topo-wrap{max-width:960px;margin:0 auto 16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px 24px 20px;overflow-x:auto;}
+.topo{display:flex;align-items:center;gap:0;min-width:680px;}
 
-/* ── grid layout ── */
-.net-grid{
-  display:grid;
-  grid-template-columns:180px 90px 160px 90px 160px 90px 180px;
-  grid-template-rows:auto auto auto auto auto;
-  align-items:center;
-  justify-items:center;
-  gap:0;
-  min-width:820px;
-}
+.topo-col{display:flex;flex-direction:column;gap:20px;}
 
-/* nodes */
-.node{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;}
-.node-icon{font-size:38px;line-height:1;}
-.node-label{font-size:11px;color:var(--muted);font-weight:600;line-height:1.4;}
-.node-ip{font-size:12px;color:var(--blue-lt);font-family:monospace;font-weight:700;}
+.topo-node{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;min-width:110px;}
+.topo-icon{font-size:36px;line-height:1;}
+.topo-name{font-size:12px;color:var(--muted);font-weight:600;line-height:1.3;}
+.topo-ip{font-size:12px;color:var(--blue-lt);font-family:monospace;font-weight:700;}
+.topo-ip2{font-size:11px;color:var(--muted);font-family:monospace;margin-top:2px;}
 
-/* horizontal wire */
-.wire-h{width:100%;height:2px;background:var(--border);position:relative;}
-.wire-h::after{content:'';position:absolute;right:-6px;top:-4px;border:5px solid transparent;border-left-color:var(--border);}
+/* wires */
+.wire{flex:1;height:2px;background:var(--border);position:relative;min-width:28px;}
+.wire::after{content:'';position:absolute;right:-5px;top:-4px;border:5px solid transparent;border-left-color:var(--border);}
+.wire-join{width:2px;height:48px;background:var(--border);margin:0 auto;}
+.wire-fork{display:flex;flex-direction:column;align-items:flex-end;gap:0;position:relative;}
+.wire-fork::before{content:'';position:absolute;right:0;top:50%;bottom:50%;width:2px;background:var(--border);}
 
-/* vertical wires between rows */
-.wire-v{width:2px;height:32px;background:var(--border);}
-
-/* section box */
-.section-box{
-  border:1px dashed var(--border);border-radius:10px;
-  padding:10px 14px;width:100%;text-align:left;
-  background:var(--surface2);
-}
-.section-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
-.section-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;}
-.section-row:last-child{margin-bottom:0;}
-.section-row label{color:var(--muted);white-space:nowrap;}
-
-/* dropdown select */
-select{
-  background:var(--bg);color:var(--text);border:1px solid var(--border);
-  border-radius:6px;padding:4px 28px 4px 8px;font-size:12px;
-  font-family:monospace;cursor:pointer;outline:none;
-  appearance:auto;min-width:170px;
-}
-select:focus{border-color:var(--blue-lt);}
-select.correct{border-color:var(--green);background:#0d2318;}
-select.wrong{border-color:var(--red);background:#1e0d0d;}
-select:disabled{cursor:default;opacity:.85;}
-
-/* step number */
-.step-num{
-  background:var(--blue);color:#fff;border-radius:50%;
-  width:18px;height:18px;font-size:10px;font-weight:700;
-  display:inline-flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-}
+.fork-area{display:flex;align-items:center;gap:0;flex:1;}
+.fork-left{display:flex;flex-direction:column;gap:0;align-items:flex-end;}
+.fork-wire-top{width:2px;height:100%;background:var(--border);}
 
 /* firewall node special */
-.fw-node{text-align:center;}
-.fw-icon{font-size:42px;line-height:1;}
-.fw-label{font-size:11px;font-weight:700;color:var(--yellow);}
-.fw-ip{font-size:11px;font-family:monospace;color:var(--muted);}
+.fw-node{text-align:center;min-width:140px;}
+.fw-icon{font-size:40px;line-height:1;}
+.fw-name{font-size:12px;font-weight:700;color:var(--yellow);}
+.fw-ip{font-size:11px;font-family:monospace;color:var(--muted);line-height:1.5;margin-top:3px;}
+
+/* ── step cards ── */
+.steps-wrap{max-width:960px;margin:0 auto 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:640px){.steps-wrap{grid-template-columns:1fr;}}
+
+.step-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+.step-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.step-circle{background:var(--blue);color:#fff;border-radius:50%;width:26px;height:26px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-title{font-size:14px;font-weight:700;}
+.step-body{display:flex;flex-direction:column;gap:10px;}
+.field-group{display:flex;flex-direction:column;gap:4px;}
+.field-label{font-size:12px;color:var(--muted);font-weight:600;}
+
+/* dropdown */
+select{
+  background:var(--bg);color:var(--text);border:1px solid var(--border);
+  border-radius:6px;padding:6px 10px;font-size:13px;
+  font-family:monospace;cursor:pointer;outline:none;width:100%;
+}
+select:focus{border-color:var(--blue-lt);}
+select.correct{border-color:var(--green);background:var(--green-bg);}
+select.wrong{border-color:var(--red);background:var(--red-bg);}
+select:disabled{cursor:default;opacity:.85;}
 
 /* ── actions ── */
-.actions{max-width:980px;margin:0 auto 0;display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:0 0 4px;}
-button{padding:10px 22px;border-radius:8px;border:none;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s,transform .08s;}
+.actions{max-width:960px;margin:0 auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+button{padding:10px 22px;border-radius:8px;border:none;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s,transform .08s;}
 button:active{transform:scale(.97);}
 .btn-submit{background:var(--accent);color:#fff;}
 .btn-submit:hover{background:#2ea043;}
@@ -104,26 +94,24 @@ button:active{transform:scale(.97);}
 .score-badge{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;padding:10px 16px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);}
 
 /* ── explanation ── */
-.exp-panel{max-width:980px;margin:20px auto 0;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:none;}
+.exp-panel{max-width:960px;margin:20px auto 0;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:none;}
 .exp-panel.show{display:block;}
-.exp-hd{background:var(--surface2);border-bottom:1px solid var(--border);padding:13px 22px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
-.exp-body{padding:20px 22px;display:flex;flex-direction:column;gap:12px;}
+.exp-hd{background:var(--surface2);border-bottom:1px solid var(--border);padding:13px 22px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+.exp-body{padding:20px 22px;display:flex;flex-direction:column;gap:10px;}
 .exp-row{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;padding:13px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);}
-.exp-row.ok{border-color:var(--green);}
-.exp-row.bad{border-color:var(--red);}
+.exp-row.ok {border-color:var(--green-border);}
+.exp-row.bad{border-color:var(--red-border);}
 .exp-icon{font-size:16px;padding-top:1px;}
-.exp-content{font-size:13px;line-height:1.6;}
+.exp-content{font-size:14px;line-height:1.6;}
 .exp-content strong{color:var(--text);}
 .exp-content .wrong-ans{color:var(--red);}
 .exp-content .right-ans{color:var(--green);}
-.exp-note{font-size:12px;color:var(--muted);margin-top:3px;}
-.exp-ft{padding:13px 22px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);line-height:1.65;}
+.exp-note{font-size:13px;color:var(--muted);margin-top:4px;}
+.exp-ft{padding:14px 22px;border-top:1px solid var(--border);font-size:13px;color:var(--muted);line-height:1.65;}
 .exp-ft strong{color:var(--text);}
-
-/* NAT table */
-.nat-table{width:100%;border-collapse:collapse;font-size:12px;font-family:monospace;margin-top:6px;}
-.nat-table th{background:var(--surface);color:var(--muted);font-weight:700;padding:6px 10px;border:1px solid var(--border);text-align:left;font-family:-apple-system,sans-serif;font-size:11px;letter-spacing:.05em;text-transform:uppercase;}
-.nat-table td{padding:6px 10px;border:1px solid var(--border);}
+.nat-table{width:100%;border-collapse:collapse;font-size:13px;font-family:monospace;margin-top:8px;}
+.nat-table th{background:var(--surface);color:var(--muted);font-weight:700;padding:7px 10px;border:1px solid var(--border);text-align:left;font-family:-apple-system,sans-serif;font-size:12px;letter-spacing:.05em;text-transform:uppercase;}
+.nat-table td{padding:7px 10px;border:1px solid var(--border);}
 .nat-table tr:nth-child(even) td{background:#0d1117;}
 </style>
 </head>
@@ -135,88 +123,93 @@ button:active{transform:scale(.97);}
   <a class="back-link" href="index.html">← All Questions</a>
 </div>
 
-<div class="scenario-card">
-  <div class="q-label">Question 2 of N — Implement Secure Switching &amp; Routing</div>
+<div class="card">
+  <div class="q-label">Question D4-Q2 — Implement Secure Switching &amp; Routing</div>
   <p class="q-text">
     An organization uses a <strong>NAPT (Network Address Port Translation)</strong> firewall to share a single
     public IP address among multiple internal clients. Two internal clients simultaneously access
     an external HTTPS web server.
   </p>
-  <hr style="border:none;border-top:1px solid var(--border);margin:14px 0;"/>
+  <hr class="hr"/>
   <p class="q-sub">
-    Use the <strong>dropdown selectors</strong> to select the correct IP/socket configuration
-    for each numbered communication step shown in the diagram.
-    Each answer represents a value visible in the network during that step.
+    Use the <strong>dropdown selectors</strong> in each step card to identify the correct IP:port socket
+    at each point in the communication. Each answer represents what is visible on the wire at that step.
   </p>
 </div>
 
-<!-- DIAGRAM -->
-<div class="diagram-wrap">
-<div class="net-grid">
+<!-- TOPOLOGY DIAGRAM -->
+<div class="topo-wrap">
 
-  <!-- Row 1: Client nodes -->
-  <div class="node" style="grid-column:1;grid-row:1;">
-    <div class="node-icon">🖥️</div>
-    <div class="node-label">Org Internal<br>Client A</div>
-    <div class="node-ip">192.168.1.10</div>
+  <!-- Two clients merge into switch, then firewall, then server -->
+  <div style="display:flex;align-items:center;gap:0;min-width:680px;">
+
+    <!-- Left column: Client A & B stacked -->
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="topo-node">
+        <div class="topo-icon">🖥️</div>
+        <div class="topo-name">Client A</div>
+        <div class="topo-ip">192.168.1.10</div>
+      </div>
+      <div class="topo-node">
+        <div class="topo-icon">💻</div>
+        <div class="topo-name">Client B</div>
+        <div class="topo-ip">192.168.1.20</div>
+      </div>
+    </div>
+
+    <!-- Fork wires A+B → Switch -->
+    <div style="display:flex;flex-direction:column;gap:0;align-items:stretch;width:60px;">
+      <div style="display:flex;align-items:center;">
+        <div style="flex:1;height:2px;background:var(--border);"></div>
+        <div style="width:2px;height:34px;background:var(--border);margin-top:0;"></div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <div style="flex:1;height:2px;background:var(--border);"></div>
+        <div style="width:2px;height:0px;background:transparent;"></div>
+      </div>
+    </div>
+
+    <!-- Switch -->
+    <div class="topo-node" style="min-width:90px;">
+      <div class="topo-icon">🔀</div>
+      <div class="topo-name">Internal<br>Switch</div>
+    </div>
+
+    <!-- Wire Switch → Firewall -->
+    <div class="wire" style="min-width:50px;"></div>
+
+    <!-- Firewall -->
+    <div class="fw-node">
+      <div class="fw-icon">🔥</div>
+      <div class="fw-name">NAPT Firewall</div>
+      <div class="fw-ip">Inside: 192.168.1.1<br>Outside: 203.0.113.50</div>
+    </div>
+
+    <!-- Wire Firewall → Server -->
+    <div class="wire" style="min-width:50px;"></div>
+
+    <!-- Web Server -->
+    <div class="topo-node" style="min-width:120px;">
+      <div class="topo-icon">🌐</div>
+      <div class="topo-name">Internet Web Server<br>example.org</div>
+      <div class="topo-ip">198.51.100.80</div>
+    </div>
+
   </div>
+</div>
 
-  <!-- wire A → switch -->
-  <div style="grid-column:2;grid-row:1;width:100%;">
-    <div class="wire-h"></div>
-  </div>
+<!-- STEP CARDS -->
+<div class="steps-wrap">
 
-  <!-- Switch -->
-  <div class="node" style="grid-column:3;grid-row:1;grid-row-end:3;">
-    <div class="node-icon">🔀</div>
-    <div class="node-label">Org Internal<br>Switch</div>
-  </div>
-
-  <!-- Client B -->
-  <div class="node" style="grid-column:1;grid-row:3;">
-    <div class="node-icon">💻</div>
-    <div class="node-label">Org Internal<br>Client B</div>
-    <div class="node-ip">192.168.1.20</div>
-  </div>
-
-  <!-- wire B → switch -->
-  <div style="grid-column:2;grid-row:3;width:100%;">
-    <div class="wire-h"></div>
-  </div>
-
-  <!-- wire switch → firewall (row 2) -->
-  <div style="grid-column:4;grid-row:1;grid-row-end:4;width:100%;">
-    <div class="wire-h"></div>
-  </div>
-
-  <!-- Firewall -->
-  <div class="fw-node" style="grid-column:5;grid-row:1;grid-row-end:4;">
-    <div class="fw-icon">🔥</div>
-    <div class="fw-label">NAPT Firewall</div>
-    <div class="fw-ip">Inside: 192.168.1.1<br>Outside: 203.0.113.50</div>
-  </div>
-
-  <!-- wire firewall → server -->
-  <div style="grid-column:6;grid-row:1;grid-row-end:4;width:100%;">
-    <div class="wire-h"></div>
-  </div>
-
-  <!-- Web server -->
-  <div class="node" style="grid-column:7;grid-row:1;grid-row-end:4;">
-    <div class="node-icon">🌐</div>
-    <div class="node-label">Internet Web Server<br>example.org</div>
-    <div class="node-ip">198.51.100.80</div>
-  </div>
-
-  <!-- ── Step boxes row ── -->
-
-  <!-- Client A step 1 -->
-  <div class="section-box" style="grid-column:1;grid-row:5;">
-    <div class="section-title">① Client A sends to:</div>
-    <div class="section-row">
-      <span class="step-num">1</span>
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        <label>Source socket:</label>
+  <!-- Step 1: Client A -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-circle">①</div>
+      <div class="step-title">Client A sends — inside the network</div>
+    </div>
+    <div class="step-body">
+      <div class="field-group">
+        <div class="field-label">Source socket (Client A's address):</div>
         <select id="d1" data-answer="192.168.1.10:54321">
           <option value="">— select —</option>
           <option>192.168.1.10:54321</option>
@@ -224,7 +217,9 @@ button:active{transform:scale(.97);}
           <option>192.168.1.1:54321</option>
           <option>192.168.1.20:54321</option>
         </select>
-        <label>Destination socket:</label>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Destination socket (web server):</div>
         <select id="d2" data-answer="198.51.100.80:443">
           <option value="">— select —</option>
           <option>198.51.100.80:443</option>
@@ -236,13 +231,15 @@ button:active{transform:scale(.97);}
     </div>
   </div>
 
-  <!-- Client B step 1 -->
-  <div class="section-box" style="grid-column:1;grid-row:6;margin-top:10px;">
-    <div class="section-title">② Client B sends to:</div>
-    <div class="section-row">
-      <span class="step-num">2</span>
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        <label>Source socket:</label>
+  <!-- Step 2: Client B -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-circle">②</div>
+      <div class="step-title">Client B sends — inside the network</div>
+    </div>
+    <div class="step-body">
+      <div class="field-group">
+        <div class="field-label">Source socket (Client B's address):</div>
         <select id="d3" data-answer="192.168.1.20:54322">
           <option value="">— select —</option>
           <option>192.168.1.20:54322</option>
@@ -250,7 +247,9 @@ button:active{transform:scale(.97);}
           <option>192.168.1.1:54322</option>
           <option>192.168.1.10:54322</option>
         </select>
-        <label>Destination socket:</label>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Destination socket (web server):</div>
         <select id="d4" data-answer="198.51.100.80:443">
           <option value="">— select —</option>
           <option>198.51.100.80:443</option>
@@ -262,13 +261,15 @@ button:active{transform:scale(.97);}
     </div>
   </div>
 
-  <!-- Firewall translated connections -->
-  <div class="section-box" style="grid-column:5;grid-row:5;grid-row-end:7;align-self:start;">
-    <div class="section-title">③ Firewall opens connections (translated):</div>
-    <div class="section-row">
-      <span class="step-num">3</span>
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        <label>Client A → translated source:</label>
+  <!-- Step 3: Firewall translation -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-circle">③</div>
+      <div class="step-title">Firewall — translated source on Internet side</div>
+    </div>
+    <div class="step-body">
+      <div class="field-group">
+        <div class="field-label">Client A → translated source socket:</div>
         <select id="d5" data-answer="203.0.113.50:61000">
           <option value="">— select —</option>
           <option>203.0.113.50:61000</option>
@@ -276,7 +277,9 @@ button:active{transform:scale(.97);}
           <option>203.0.113.50:54321</option>
           <option>192.168.1.1:61000</option>
         </select>
-        <label>Client B → translated source:</label>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Client B → translated source socket:</div>
         <select id="d6" data-answer="203.0.113.50:61001">
           <option value="">— select —</option>
           <option>203.0.113.50:61001</option>
@@ -288,13 +291,15 @@ button:active{transform:scale(.97);}
     </div>
   </div>
 
-  <!-- Server reply -->
-  <div class="section-box" style="grid-column:7;grid-row:5;grid-row-end:7;align-self:start;">
-    <div class="section-title">④ Server replies to:</div>
-    <div class="section-row">
-      <span class="step-num">4</span>
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        <label>Reply for Client A:</label>
+  <!-- Step 4: Server reply -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-circle">④</div>
+      <div class="step-title">Web server replies to:</div>
+    </div>
+    <div class="step-body">
+      <div class="field-group">
+        <div class="field-label">Destination for Client A's reply:</div>
         <select id="d7" data-answer="203.0.113.50:61000">
           <option value="">— select —</option>
           <option>203.0.113.50:61000</option>
@@ -302,7 +307,9 @@ button:active{transform:scale(.97);}
           <option>203.0.113.50:443</option>
           <option>192.168.1.1:61000</option>
         </select>
-        <label>Reply for Client B:</label>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Destination for Client B's reply:</div>
         <select id="d8" data-answer="203.0.113.50:61001">
           <option value="">— select —</option>
           <option>203.0.113.50:61001</option>
@@ -314,11 +321,10 @@ button:active{transform:scale(.97);}
     </div>
   </div>
 
-</div><!-- /net-grid -->
-</div><!-- /diagram-wrap -->
+</div><!-- /steps-wrap -->
 
 <div class="actions">
-  <button class="btn-submit" id="btnSubmit">Submit Answer</button>
+  <button class="btn-submit" id="btnSubmit" disabled>Submit Answer</button>
   <button class="btn-reset" id="btnReset">Reset</button>
   <span class="score-badge" id="scoreBadge" style="display:none;"></span>
 </div>
@@ -329,40 +335,45 @@ button:active{transform:scale(.97);}
   <div class="exp-body" id="expBody"></div>
   <div class="exp-ft">
     <strong>NAPT Translation Table (for this scenario):</strong>
-    <table class="nat-table" style="margin-top:8px;">
-      <thead>
-        <tr>
-          <th>Inside Private (Source)</th>
-          <th>Inside Private (Dest)</th>
-          <th>Outside Public (Source)</th>
-          <th>Outside Public (Dest)</th>
-        </tr>
-      </thead>
+    <table class="nat-table">
+      <thead><tr>
+        <th>Inside Source</th><th>Inside Dest</th>
+        <th>Outside Source (translated)</th><th>Outside Dest</th>
+      </tr></thead>
       <tbody>
         <tr><td>192.168.1.10:54321</td><td>198.51.100.80:443</td><td>203.0.113.50:61000</td><td>198.51.100.80:443</td></tr>
         <tr><td>192.168.1.20:54322</td><td>198.51.100.80:443</td><td>203.0.113.50:61001</td><td>198.51.100.80:443</td></tr>
       </tbody>
     </table>
     <p style="margin-top:10px;">
-      <strong>Key concept:</strong> NAPT (also called PAT — Port Address Translation) allows multiple private hosts to share
-      a single public IP by assigning unique <em>ephemeral port numbers</em> on the outside interface.
-      The server only ever sees the firewall's public IP (<code>203.0.113.50</code>); the original private IPs
-      are hidden. This is why NAPT provides implicit <strong>topology hiding</strong> as a security benefit.
+      <strong>Key concept:</strong> NAPT (also called PAT — Port Address Translation) lets multiple private hosts
+      share one public IP by assigning unique <em>ephemeral ports</em> on the outside interface.
+      The web server only ever sees the firewall's public IP (<code>203.0.113.50</code>); private IPs are hidden,
+      which provides implicit <strong>topology hiding</strong> as a security benefit.
     </p>
   </div>
 </div>
 
 <script>
 const QUESTIONS = [
-  { id:'d1', label:'Client A — Source socket',             answer:'192.168.1.10:54321',  explanation:'Client A originates the connection from its own private IP (192.168.1.10) on ephemeral port 54321. This is the socket visible <em>inside</em> the network, before NAT.' },
-  { id:'d2', label:'Client A — Destination socket',        answer:'198.51.100.80:443',   explanation:'HTTPS uses port 443. The destination is always the real web server IP:port — NAT does not change the destination.' },
-  { id:'d3', label:'Client B — Source socket',             answer:'192.168.1.20:54322',  explanation:'Client B uses its own private IP (192.168.1.20) with a different ephemeral port. Two clients can use similar port numbers internally; the firewall differentiates them on the outside.' },
-  { id:'d4', label:'Client B — Destination socket',        answer:'198.51.100.80:443',   explanation:'Same web server destination for both clients — NAPT only translates the source, not the destination.' },
-  { id:'d5', label:'Firewall — Translated source for A',   answer:'203.0.113.50:61000',  explanation:'The firewall replaces the private source 192.168.1.10:54321 with its public IP 203.0.113.50 and a unique outside port 61000. The server sees only this translated address.' },
-  { id:'d6', label:'Firewall — Translated source for B',   answer:'203.0.113.50:61001',  explanation:'Client B gets a different outside port (61001) so the firewall can distinguish which reply belongs to which internal host when the server responds.' },
-  { id:'d7', label:'Server reply — destination for A',     answer:'203.0.113.50:61000',  explanation:'The server sends its reply to the address it saw as source: 203.0.113.50:61000. The firewall then reverses the translation and forwards the packet to 192.168.1.10:54321.' },
-  { id:'d8', label:'Server reply — destination for B',     answer:'203.0.113.50:61001',  explanation:'Similarly the server replies to 203.0.113.50:61001, which the firewall maps back to 192.168.1.20:54322 using its state table.' },
+  { id:'d1', label:'Client A — Source socket',           answer:'192.168.1.10:54321', explanation:'Client A originates from its own private IP on ephemeral port 54321. This is the socket visible <em>inside</em> the network, before translation.' },
+  { id:'d2', label:'Client A — Destination socket',      answer:'198.51.100.80:443',  explanation:'HTTPS uses port 443. NAT does not change the destination — only the source is translated.' },
+  { id:'d3', label:'Client B — Source socket',           answer:'192.168.1.20:54322', explanation:'Client B uses its own private IP with a different ephemeral port. Both clients may use similar internal port numbers; the firewall differentiates them externally.' },
+  { id:'d4', label:'Client B — Destination socket',      answer:'198.51.100.80:443',  explanation:'Same web server destination for both clients — NAPT only translates the source address/port.' },
+  { id:'d5', label:'Firewall — Translated source for A', answer:'203.0.113.50:61000', explanation:'The firewall replaces 192.168.1.10:54321 with its public IP 203.0.113.50 and a unique outside port 61000. The server sees only this translated address.' },
+  { id:'d6', label:'Firewall — Translated source for B', answer:'203.0.113.50:61001', explanation:'Client B gets a different outside port (61001) so the firewall can correctly de-multiplex replies back to the right internal host.' },
+  { id:'d7', label:'Server reply — destination for A',   answer:'203.0.113.50:61000', explanation:'The server replies to the address it observed as source: 203.0.113.50:61000. The firewall reverses the translation and forwards to 192.168.1.10:54321.' },
+  { id:'d8', label:'Server reply — destination for B',   answer:'203.0.113.50:61001', explanation:'The server replies to 203.0.113.50:61001, which the firewall maps back to 192.168.1.20:54322 using its state table.' },
 ];
+
+const selects = QUESTIONS.map(q => document.getElementById(q.id));
+
+// Enable submit only when all selects have a value
+function checkReady() {
+  const allFilled = selects.every(s => s.value !== '');
+  document.getElementById('btnSubmit').disabled = !allFilled;
+}
+selects.forEach(s => s.addEventListener('change', checkReady));
 
 document.getElementById('btnSubmit').addEventListener('click', () => {
   let correct = 0;
@@ -381,7 +392,7 @@ document.getElementById('btnSubmit').addEventListener('click', () => {
   badge.style.display = 'inline-flex';
   badge.innerHTML = `<span style="font-size:18px">${pct>=70?'✅':'❌'}</span>
     <span>${correct}/${QUESTIONS.length} correct (${pct}%)</span>
-    <span style="color:var(--muted);font-weight:400;font-size:12px">${pct>=70?' — PASS':' — BELOW PASSING'}</span>`;
+    <span style="color:var(--muted);font-weight:400;font-size:13px">${pct>=70?' — PASS':' — BELOW PASSING'}</span>`;
 
   const body = document.getElementById('expBody');
   body.innerHTML = '';
@@ -405,15 +416,10 @@ document.getElementById('btnSubmit').addEventListener('click', () => {
 });
 
 document.getElementById('btnReset').addEventListener('click', () => {
-  QUESTIONS.forEach(q => {
-    const sel = document.getElementById(q.id);
-    sel.value = '';
-    sel.className = '';
-    sel.disabled = false;
-  });
+  selects.forEach(s => { s.value=''; s.className=''; s.disabled=false; });
   document.getElementById('scoreBadge').style.display = 'none';
   document.getElementById('expPanel').classList.remove('show');
-  document.getElementById('btnSubmit').disabled = false;
+  document.getElementById('btnSubmit').disabled = true;
   window.scrollTo({top:0,behavior:'smooth'});
 });
 </script>

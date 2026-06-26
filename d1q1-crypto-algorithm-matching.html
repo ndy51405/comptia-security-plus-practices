@@ -41,12 +41,12 @@ body {
 }
 .badge {
   background: var(--purple); color: #fff;
-  font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
   padding: 3px 10px; border-radius: 20px; white-space: nowrap;
 }
-.top-title { flex: 1; font-size: 13px; color: var(--muted); min-width: 0; }
+.top-title { flex: 1; font-size: 14px; color: var(--muted); min-width: 0; }
 .back-link {
-  font-size: 13px; color: var(--blue-lt); text-decoration: none;
+  font-size: 14px; color: var(--blue-lt); text-decoration: none;
   white-space: nowrap;
 }
 .back-link:hover { text-decoration: underline; }
@@ -62,18 +62,18 @@ body {
 .sc-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
 .sc-title { font-size: 18px; font-weight: 700; }
 .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
-.tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; letter-spacing: .04em; }
+.tag { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 12px; letter-spacing: .04em; }
 .tag-domain { background: #1a2d4a; color: var(--blue-lt); border: 1px solid #1f3d6b; }
 .tag-type   { background: #1e1a2e; color: #b695f8; border: 1px solid #3d2d6b; }
 .tag-diff.easy { background: #0d1f0d; color: #3fb950; border: 1px solid #196c2e; }
 .scenario-box {
   background: var(--surface2); border: 1px solid var(--border);
   border-radius: 8px; padding: 16px; margin-bottom: 14px;
-  font-size: 14px; line-height: 1.7; color: var(--text);
+  font-size: 15px; line-height: 1.7; color: var(--text);
 }
 .scenario-box strong { color: var(--blue-lt); }
 .instructions {
-  font-size: 13px; color: var(--muted); line-height: 1.6;
+  font-size: 14px; color: var(--muted); line-height: 1.6;
 }
 
 /* ── Matching layout ── */
@@ -88,7 +88,7 @@ body {
 }
 
 .col-label {
-  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
   color: var(--muted); margin-bottom: 10px;
 }
 
@@ -102,7 +102,7 @@ body {
 .chip {
   background: var(--surface2); border: 1px solid var(--border);
   border-radius: 8px; padding: 10px 14px;
-  font-size: 13px; font-weight: 600; color: var(--blue-lt);
+  font-size: 14px; font-weight: 600; color: var(--blue-lt);
   cursor: grab; user-select: none;
   transition: border-color .15s, opacity .15s;
   font-family: 'Courier New', monospace;
@@ -121,7 +121,7 @@ body {
   background: var(--surface2); border: 2px dashed var(--border);
   border-radius: 8px; padding: 10px 14px;
   min-height: 52px; display: flex; align-items: center;
-  font-size: 13px; line-height: 1.4; color: var(--text);
+  font-size: 14px; line-height: 1.4; color: var(--text);
   position: relative; transition: border-color .15s, background .15s;
 }
 .zone.drag-over { border-color: var(--blue-lt); background: #1a2540; }
@@ -129,7 +129,7 @@ body {
 .zone-chip {
   background: var(--blue); color: #fff;
   border-radius: 6px; padding: 4px 10px;
-  font-size: 12px; font-weight: 700;
+  font-size: 13px; font-weight: 700;
   font-family: 'Courier New', monospace;
   white-space: nowrap; cursor: grab;
   flex-shrink: 0;
@@ -145,14 +145,14 @@ body {
 .btn-submit {
   background: var(--accent); color: #fff;
   border: none; border-radius: 8px;
-  padding: 10px 24px; font-size: 14px; font-weight: 600;
+  padding: 10px 24px; font-size: 15px; font-weight: 600;
   cursor: pointer; transition: opacity .15s;
 }
 .btn-submit:disabled { opacity: .4; cursor: not-allowed; }
 .btn-reset {
   background: transparent; color: var(--muted);
   border: 1px solid var(--border); border-radius: 8px;
-  padding: 10px 20px; font-size: 14px; font-weight: 600;
+  padding: 10px 20px; font-size: 15px; font-weight: 600;
   cursor: pointer; transition: border-color .15s, color .15s;
 }
 .btn-reset:hover { border-color: var(--muted); color: var(--text); }
@@ -160,7 +160,7 @@ body {
   display: flex; align-items: center; gap: 8px;
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 8px; padding: 8px 16px;
-  font-size: 14px; font-weight: 700;
+  font-size: 15px; font-weight: 700;
 }
 
 /* ── Explanation panel ── */
@@ -171,7 +171,7 @@ body {
 .exp-header {
   padding: 14px 20px;
   background: var(--surface2); border-bottom: 1px solid var(--border);
-  font-size: 13px; font-weight: 700; letter-spacing: .04em;
+  font-size: 14px; font-weight: 700; letter-spacing: .04em;
   text-transform: uppercase; color: var(--muted);
 }
 .exp-row {
@@ -179,14 +179,14 @@ body {
   display: flex; gap: 12px; align-items: flex-start;
 }
 .exp-row:last-of-type { border-bottom: none; }
-.exp-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.exp-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
 .exp-content { flex: 1; }
-.exp-alg { font-weight: 700; font-size: 13px; font-family: 'Courier New', monospace; color: var(--blue-lt); margin-bottom: 4px; }
-.exp-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.exp-alg { font-weight: 700; font-size: 14px; font-family: 'Courier New', monospace; color: var(--blue-lt); margin-bottom: 4px; }
+.exp-text { font-size: 14px; color: var(--muted); line-height: 1.6; }
 .exp-tip {
   margin: 0 20px 20px; padding: 14px 16px;
   background: #1a1f2e; border: 1px solid #2a3a6e;
-  border-radius: 8px; font-size: 13px; color: #a0b4e8; line-height: 1.6;
+  border-radius: 8px; font-size: 14px; color: #a0b4e8; line-height: 1.6;
 }
 .exp-tip strong { color: var(--blue-lt); }
 </style>
@@ -457,7 +457,7 @@ document.getElementById('btnSubmit').addEventListener('click', () => {
   badge.style.display = 'flex';
   badge.innerHTML = `<span style="font-size:18px">${pct >= 70 ? '✅' : '❌'}</span>
     <span>${correct}/${total} correct (${pct}%)</span>
-    <span style="color:var(--muted);font-weight:400;font-size:12px">
+    <span style="color:var(--muted);font-weight:400;font-size:13px">
       ${pct >= 70 ? ' — PASS' : ' — BELOW PASSING'}
     </span>`;
 
@@ -479,7 +479,7 @@ document.getElementById('btnSubmit').addEventListener('click', () => {
     row.innerHTML = `
       <span class="exp-icon">${isCorrect ? '✅' : '❌'}</span>
       <div class="exp-content">
-        <div class="exp-alg">${correctItem.label}${!isCorrect ? ` <span style="color:var(--muted);font-family:sans-serif;font-weight:400;font-size:12px;">(you chose: ${placedItem ? placedItem.label : 'nothing'})</span>` : ''}</div>
+        <div class="exp-alg">${correctItem.label}${!isCorrect ? ` <span style="color:var(--muted);font-family:sans-serif;font-weight:400;font-size:13px;">(you chose: ${placedItem ? placedItem.label : 'nothing'})</span>` : ''}</div>
         <div class="exp-text">${correctItem.explanation}</div>
       </div>`;
     expPanel.insertBefore(row, tip);

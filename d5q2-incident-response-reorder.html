@@ -9,51 +9,51 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding:0 0 80px;}
 .top-bar{display:flex;align-items:center;gap:12px;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;flex-wrap:wrap;}
-.badge{background:var(--purple);color:#fff;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;}
-.top-title{flex:1;font-size:13px;color:var(--muted);min-width:0;}
-.back-link{font-size:13px;color:var(--blue-lt);text-decoration:none;white-space:nowrap;}
+.badge{background:var(--purple);color:#fff;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.top-title{flex:1;font-size:14px;color:var(--muted);min-width:0;}
+.back-link{font-size:14px;color:var(--blue-lt);text-decoration:none;white-space:nowrap;}
 .back-link:hover{text-decoration:underline;}
 .page{max-width:760px;margin:0 auto;padding:32px 16px;}
 .scenario-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;}
 .sc-title{font-size:18px;font-weight:700;margin-bottom:8px;}
 .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
-.tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;letter-spacing:.04em;}
+.tag{font-size:12px;font-weight:600;padding:2px 8px;border-radius:12px;letter-spacing:.04em;}
 .tag-domain{background:#1a2d4a;color:var(--blue-lt);border:1px solid #1f3d6b;}
 .tag-type{background:#1e1a2e;color:#b695f8;border:1px solid #3d2d6b;}
 .tag-diff.med{background:#1e1a0e;color:var(--yellow);border:1px solid #4a3800;}
-.scenario-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;font-size:14px;line-height:1.7;}
+.scenario-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;font-size:15px;line-height:1.7;}
 .scenario-box strong{color:var(--blue-lt);}
-.instructions{font-size:13px;color:var(--muted);line-height:1.6;}
+.instructions{font-size:14px;color:var(--muted);line-height:1.6;}
 .reorder-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
 .r-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;cursor:grab;user-select:none;transition:border-color .15s,background .15s;position:relative;}
 .r-card:hover{border-color:var(--blue-lt);background:var(--surface2);}
 .r-card.dragging{opacity:.3;}
 .r-card.drag-over-top{border-top:2px solid var(--blue-lt);}
 .r-card.drag-over-bot{border-bottom:2px solid var(--blue-lt);}
-.r-handle{color:var(--muted);font-size:16px;flex-shrink:0;margin-top:2px;}
-.r-pos{width:28px;height:28px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--muted);flex-shrink:0;}
+.r-handle{color:var(--muted);font-size:18px;flex-shrink:0;margin-top:2px;}
+.r-pos{width:28px;height:28px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--muted);flex-shrink:0;}
 .r-body{flex:1;}
-.r-phase{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
-.r-text{font-size:13px;line-height:1.5;}
+.r-phase{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.r-text{font-size:14px;line-height:1.5;}
 .r-badge{position:absolute;right:14px;top:14px;font-size:18px;display:none;}
 .r-card.correct{border-color:var(--green-border);background:var(--green-bg);}
 .r-card.wrong{border-color:var(--red-border);background:var(--red-bg);}
 .r-card.correct .r-pos{background:var(--green-bg);border-color:var(--green-border);color:#3fb950;}
 .r-card.wrong .r-pos{background:var(--red-bg);border-color:var(--red-border);color:#f85149;}
 .actions{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
-.btn-submit{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-submit{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:15px;font-weight:600;cursor:pointer;}
 .btn-submit:disabled{opacity:.4;cursor:not-allowed;}
-.btn-reset{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-reset{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px 20px;font-size:15px;font-weight:600;cursor:pointer;}
 .btn-reset:hover{border-color:var(--muted);color:var(--text);}
-.score-badge{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:14px;font-weight:700;}
+.score-badge{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:15px;font-weight:700;}
 .explanation{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:none;}
-.exp-header{padding:14px 20px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);}
+.exp-header{padding:14px 20px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:14px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);}
 .exp-row{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;}
-.exp-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.exp-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
 .exp-content{flex:1;}
-.exp-step{font-weight:700;font-size:13px;color:var(--blue-lt);margin-bottom:4px;}
-.exp-text{font-size:13px;color:var(--muted);line-height:1.6;}
-.exp-tip{margin:0 20px 20px;padding:14px 16px;background:#1a1f2e;border:1px solid #2a3a6e;border-radius:8px;font-size:13px;color:#a0b4e8;line-height:1.6;}
+.exp-step{font-weight:700;font-size:14px;color:var(--blue-lt);margin-bottom:4px;}
+.exp-text{font-size:14px;color:var(--muted);line-height:1.6;}
+.exp-tip{margin:0 20px 20px;padding:14px 16px;background:#1a1f2e;border:1px solid #2a3a6e;border-radius:8px;font-size:14px;color:#a0b4e8;line-height:1.6;}
 .exp-tip strong{color:var(--blue-lt);}
 </style>
 </head>
@@ -110,7 +110,7 @@ function init(){submitted=false;do{order=shuffle(CORRECT_ORDER);}while(order.joi
 function render(){const list=document.getElementById('reorderList');list.innerHTML='';order.forEach((id,idx)=>{const step=STEPS.find(s=>s.id===id);const card=document.createElement('div');card.className='r-card';card.draggable=!submitted;card.dataset.idx=idx;card.innerHTML=`<span class="r-handle">⠿</span><div class="r-pos">${idx+1}</div><div class="r-body"><div class="r-phase">${step.phase}</div><div class="r-text">${step.text}</div></div><span class="r-badge" id="badge-${idx}"></span>`;
 if(!submitted){card.addEventListener('dragstart',()=>{dragSrcIdx=idx;setTimeout(()=>card.classList.add('dragging'),0);});card.addEventListener('dragend',()=>{card.classList.remove('dragging');dragSrcIdx=null;document.querySelectorAll('.r-card').forEach(c=>c.classList.remove('drag-over-top','drag-over-bot'));});card.addEventListener('dragover',e=>{e.preventDefault();card.classList.remove('drag-over-top','drag-over-bot');const rect=card.getBoundingClientRect();card.classList.add(e.clientY<rect.top+rect.height/2?'drag-over-top':'drag-over-bot');});card.addEventListener('dragleave',()=>card.classList.remove('drag-over-top','drag-over-bot'));card.addEventListener('drop',e=>{e.preventDefault();card.classList.remove('drag-over-top','drag-over-bot');if(dragSrcIdx===null||dragSrcIdx===idx)return;const rect=card.getBoundingClientRect();const before=e.clientY<rect.top+rect.height/2;const[moved]=order.splice(dragSrcIdx,1);let t=order.indexOf(id);if(!before)t+=1;order.splice(t,0,moved);dragSrcIdx=null;render();});}
 card.addEventListener('touchstart',onTouchStart,{passive:false});list.appendChild(card);});}
-document.getElementById('btnSubmit').addEventListener('click',()=>{if(submitted)return;submitted=true;document.getElementById('btnSubmit').disabled=true;let correct=0;order.forEach((id,idx)=>{const ok=id===CORRECT_ORDER[idx];if(ok)correct++;const card=document.querySelector(`.r-card[data-idx="${idx}"]`);card.classList.add(ok?'correct':'wrong');card.draggable=false;const b=card.querySelector('.r-badge');b.textContent=ok?'✅':'❌';b.style.display='block';});const total=STEPS.length,pct=Math.round(correct/total*100);const badge=document.getElementById('scoreBadge');badge.style.display='flex';badge.innerHTML=`<span style="font-size:18px">${pct>=70?'✅':'❌'}</span><span>${correct}/${total} correct (${pct}%)</span><span style="color:var(--muted);font-weight:400;font-size:12px">${pct>=70?' — PASS':' — BELOW PASSING'}</span>`;const expPanel=document.getElementById('explanation');expPanel.style.display='block';const tip=document.getElementById('expTip');STEPS.forEach((step,ci)=>{const ui=order.indexOf(step.id);const ok=ui===ci;const row=document.createElement('div');row.className='exp-row';row.innerHTML=`<span class="exp-icon">${ok?'✅':'❌'}</span><div class="exp-content"><div class="exp-step">${step.phase}${!ok?` <span style="color:var(--muted);font-weight:400;font-size:12px;">(you placed at position ${ui+1})</span>`:''}</div><div class="exp-text"><strong style="color:var(--text)">${step.text}</strong><br><br>${step.explanation}</div></div>`;expPanel.insertBefore(row,tip);});tip.innerHTML=`<strong>Exam Tip:</strong> NIST SP 800-61 Rev.2 names six phases; the two most-tested ordering traps are: (1) <em>forensic imaging occurs during Containment</em>, not Eradication — you must preserve evidence before wiping; (2) <em>Preparation is a standing phase</em> that also applies at the start of an activation (confirming playbooks and backups are ready before diving into analysis). Also remember: Security+ may shorten the model to four phases (Preparation / Detection &amp; Analysis / Containment, Eradication &amp; Recovery / Post-Incident), collapsing the middle three — know both representations.`;expPanel.scrollIntoView({behavior:'smooth',block:'start'});});
+document.getElementById('btnSubmit').addEventListener('click',()=>{if(submitted)return;submitted=true;document.getElementById('btnSubmit').disabled=true;let correct=0;order.forEach((id,idx)=>{const ok=id===CORRECT_ORDER[idx];if(ok)correct++;const card=document.querySelector(`.r-card[data-idx="${idx}"]`);card.classList.add(ok?'correct':'wrong');card.draggable=false;const b=card.querySelector('.r-badge');b.textContent=ok?'✅':'❌';b.style.display='block';});const total=STEPS.length,pct=Math.round(correct/total*100);const badge=document.getElementById('scoreBadge');badge.style.display='flex';badge.innerHTML=`<span style="font-size:18px">${pct>=70?'✅':'❌'}</span><span>${correct}/${total} correct (${pct}%)</span><span style="color:var(--muted);font-weight:400;font-size:13px">${pct>=70?' — PASS':' — BELOW PASSING'}</span>`;const expPanel=document.getElementById('explanation');expPanel.style.display='block';const tip=document.getElementById('expTip');STEPS.forEach((step,ci)=>{const ui=order.indexOf(step.id);const ok=ui===ci;const row=document.createElement('div');row.className='exp-row';row.innerHTML=`<span class="exp-icon">${ok?'✅':'❌'}</span><div class="exp-content"><div class="exp-step">${step.phase}${!ok?` <span style="color:var(--muted);font-weight:400;font-size:13px;">(you placed at position ${ui+1})</span>`:''}</div><div class="exp-text"><strong style="color:var(--text)">${step.text}</strong><br><br>${step.explanation}</div></div>`;expPanel.insertBefore(row,tip);});tip.innerHTML=`<strong>Exam Tip:</strong> NIST SP 800-61 Rev.2 names six phases; the two most-tested ordering traps are: (1) <em>forensic imaging occurs during Containment</em>, not Eradication — you must preserve evidence before wiping; (2) <em>Preparation is a standing phase</em> that also applies at the start of an activation (confirming playbooks and backups are ready before diving into analysis). Also remember: Security+ may shorten the model to four phases (Preparation / Detection &amp; Analysis / Containment, Eradication &amp; Recovery / Post-Incident), collapsing the middle three — know both representations.`;expPanel.scrollIntoView({behavior:'smooth',block:'start'});});
 document.getElementById('btnReset').addEventListener('click',init);
 let touchClone=null,touchSrcIdx=null,touchOffX=0,touchOffY=0;
 function onTouchStart(e){if(submitted)return;e.preventDefault();const card=e.currentTarget;touchSrcIdx=parseInt(card.dataset.idx);const touch=e.touches[0];const rect=card.getBoundingClientRect();touchOffX=touch.clientX-rect.left;touchOffY=touch.clientY-rect.top;touchClone=card.cloneNode(true);touchClone.style.cssText=`position:fixed;top:${rect.top}px;left:${rect.left}px;width:${rect.width}px;pointer-events:none;z-index:9999;opacity:.85;border-radius:10px;`;document.body.appendChild(touchClone);document.addEventListener('touchmove',onTouchMove,{passive:false});document.addEventListener('touchend',onTouchEnd);}
