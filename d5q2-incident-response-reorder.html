@@ -118,5 +118,94 @@ function onTouchMove(e){e.preventDefault();const touch=e.touches[0];touchClone.s
 function onTouchEnd(e){document.removeEventListener('touchmove',onTouchMove);document.removeEventListener('touchend',onTouchEnd);if(touchClone){touchClone.remove();touchClone=null;}document.querySelectorAll('.r-card').forEach(c=>c.classList.remove('drag-over-top','drag-over-bot'));const touch=e.changedTouches[0];const el=document.elementFromPoint(touch.clientX,touch.clientY);const targetCard=el&&el.closest('.r-card');if(targetCard&&touchSrcIdx!==null){const ti=parseInt(targetCard.dataset.idx);if(ti!==touchSrcIdx){const rect=targetCard.getBoundingClientRect();const before=touch.clientY<rect.top+rect.height/2;const[moved]=order.splice(touchSrcIdx,1);const ins=before?(touchSrcIdx<ti?ti-1:ti):(touchSrcIdx<ti?ti:ti+1);order.splice(Math.max(0,Math.min(ins,order.length)),0,moved);}}touchSrcIdx=null;render();}
 init();
 </script>
+<script>
+// ── Universal Drag Auto-Scroll ──────────────────────────────────────────────
+(function() {
+  let autoScrollRaf = null;
+  let currentDragY = null;
+  let isDragging = false;
+
+  function autoScrollLoop() {
+    if (!isDragging || currentDragY === null) {
+      autoScrollRaf = null;
+      return;
+    }
+    const edgeZone = 90;
+    const maxSpeed = 22;
+    const vh = window.innerHeight;
+    let delta = 0;
+
+    if (currentDragY >= 0 && currentDragY < edgeZone) {
+      const factor = (edgeZone - currentDragY) / edgeZone;
+      delta = -Math.max(2, Math.round(factor * maxSpeed));
+    } else if (currentDragY > vh - edgeZone && currentDragY <= vh) {
+      const factor = (currentDragY - (vh - edgeZone)) / edgeZone;
+      delta = Math.max(2, Math.round(factor * maxSpeed));
+    }
+
+    if (delta !== 0) {
+      const maxScroll = Math.max(
+        document.documentElement.scrollHeight,
+        document.body.scrollHeight
+      ) - vh;
+      const currentScroll = window.scrollY || window.pageYOffset || 0;
+      if ((delta < 0 && currentScroll > 0) || (delta > 0 && currentScroll < maxScroll)) {
+        window.scrollBy(0, delta);
+      }
+    }
+
+    autoScrollRaf = requestAnimationFrame(autoScrollLoop);
+  }
+
+  function startAutoScroll(clientY) {
+    currentDragY = clientY;
+    if (!autoScrollRaf) {
+      autoScrollRaf = requestAnimationFrame(autoScrollLoop);
+    }
+  }
+
+  function stopAutoScroll() {
+    isDragging = false;
+    currentDragY = null;
+    if (autoScrollRaf) {
+      cancelAnimationFrame(autoScrollRaf);
+      autoScrollRaf = null;
+    }
+  }
+
+  window.addEventListener('dragstart', () => { isDragging = true; }, { capture: true });
+  window.addEventListener('drag', e => {
+    if (e.clientX !== 0 || e.clientY !== 0) {
+      isDragging = true;
+      startAutoScroll(e.clientY);
+    }
+  }, { capture: true });
+  window.addEventListener('dragover', e => {
+    isDragging = true;
+    startAutoScroll(e.clientY);
+  }, { capture: true });
+  window.addEventListener('dragend', stopAutoScroll, { capture: true });
+  window.addEventListener('drop', stopAutoScroll, { capture: true });
+
+  window.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      const target = e.target;
+      if (target && target.closest && target.closest('.chip, .zone-chip, .r-card, .acl-card, [draggable="true"]')) {
+        isDragging = true;
+      }
+    }
+  }, { capture: true, passive: true });
+
+  window.addEventListener('touchmove', e => {
+    if (e.touches.length > 0 && (isDragging || document.querySelector('.dragging, .placed-chip.dragging, #dragClone'))) {
+      isDragging = true;
+      startAutoScroll(e.touches[0].clientY);
+    }
+  }, { capture: true, passive: true });
+
+  window.addEventListener('touchend', stopAutoScroll, { capture: true });
+  window.addEventListener('touchcancel', stopAutoScroll, { capture: true });
+})();
+</script>
 </body>
 </html>

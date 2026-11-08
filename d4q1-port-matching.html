@@ -750,5 +750,94 @@ pool.addEventListener('drop', e => {
 buildZones();
 buildPool();
 </script>
+<script>
+// ── Universal Drag Auto-Scroll ──────────────────────────────────────────────
+(function() {
+  let autoScrollRaf = null;
+  let currentDragY = null;
+  let isDragging = false;
+
+  function autoScrollLoop() {
+    if (!isDragging || currentDragY === null) {
+      autoScrollRaf = null;
+      return;
+    }
+    const edgeZone = 90;
+    const maxSpeed = 22;
+    const vh = window.innerHeight;
+    let delta = 0;
+
+    if (currentDragY >= 0 && currentDragY < edgeZone) {
+      const factor = (edgeZone - currentDragY) / edgeZone;
+      delta = -Math.max(2, Math.round(factor * maxSpeed));
+    } else if (currentDragY > vh - edgeZone && currentDragY <= vh) {
+      const factor = (currentDragY - (vh - edgeZone)) / edgeZone;
+      delta = Math.max(2, Math.round(factor * maxSpeed));
+    }
+
+    if (delta !== 0) {
+      const maxScroll = Math.max(
+        document.documentElement.scrollHeight,
+        document.body.scrollHeight
+      ) - vh;
+      const currentScroll = window.scrollY || window.pageYOffset || 0;
+      if ((delta < 0 && currentScroll > 0) || (delta > 0 && currentScroll < maxScroll)) {
+        window.scrollBy(0, delta);
+      }
+    }
+
+    autoScrollRaf = requestAnimationFrame(autoScrollLoop);
+  }
+
+  function startAutoScroll(clientY) {
+    currentDragY = clientY;
+    if (!autoScrollRaf) {
+      autoScrollRaf = requestAnimationFrame(autoScrollLoop);
+    }
+  }
+
+  function stopAutoScroll() {
+    isDragging = false;
+    currentDragY = null;
+    if (autoScrollRaf) {
+      cancelAnimationFrame(autoScrollRaf);
+      autoScrollRaf = null;
+    }
+  }
+
+  window.addEventListener('dragstart', () => { isDragging = true; }, { capture: true });
+  window.addEventListener('drag', e => {
+    if (e.clientX !== 0 || e.clientY !== 0) {
+      isDragging = true;
+      startAutoScroll(e.clientY);
+    }
+  }, { capture: true });
+  window.addEventListener('dragover', e => {
+    isDragging = true;
+    startAutoScroll(e.clientY);
+  }, { capture: true });
+  window.addEventListener('dragend', stopAutoScroll, { capture: true });
+  window.addEventListener('drop', stopAutoScroll, { capture: true });
+
+  window.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      const target = e.target;
+      if (target && target.closest && target.closest('.chip, .zone-chip, .r-card, [draggable="true"]')) {
+        isDragging = true;
+      }
+    }
+  }, { capture: true, passive: true });
+
+  window.addEventListener('touchmove', e => {
+    if (e.touches.length > 0 && (isDragging || document.querySelector('.dragging, .placed-chip.dragging'))) {
+      isDragging = true;
+      startAutoScroll(e.touches[0].clientY);
+    }
+  }, { capture: true, passive: true });
+
+  window.addEventListener('touchend', stopAutoScroll, { capture: true });
+  window.addEventListener('touchcancel', stopAutoScroll, { capture: true });
+})();
+</script>
 </body>
 </html>
